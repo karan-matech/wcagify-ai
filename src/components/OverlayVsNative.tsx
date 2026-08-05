@@ -147,7 +147,13 @@ export const OverlayVsNative: React.FC = () => {
             </span>
           </div>
 
-          <div className="overflow-x-auto">
+          {/* Focusable so keyboard users can scroll the table horizontally */}
+          <div
+            className="overflow-x-auto focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 outline-none"
+            tabIndex={0}
+            role="region"
+            aria-label="Remediation approach comparison, scrollable table"
+          >
             <table className="w-full text-left text-sm" aria-label="Remediation Approach Comparison">
               <thead className="bg-slate-100 text-slate-700 text-xs font-bold uppercase tracking-wider border-b border-slate-200">
                 <tr>

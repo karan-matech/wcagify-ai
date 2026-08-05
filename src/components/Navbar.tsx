@@ -1,30 +1,89 @@
-"use client";
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
 import { Menu, X, ArrowRight, ShieldCheck } from 'lucide-react';
-import { usePathname, useRouter } from 'next/navigation';
-import Link from 'next/link';
 
-export const Navbar: React.FC = () => {
-  const pathname = usePathname();
-  const router = useRouter();
-  
-  const currentView = pathname === '/accessibility' ? 'accessibility' : 'home';
+interface NavbarProps {
+  onNavigateToAccessibility?: () => void;
+  currentView?: 'home' | 'accessibility';
+  onNavigateHome?: () => void;
+}
 
-  const onNavigateHome = () => {
-    if (pathname !== '/') {
-      router.push('/');
-    }
-  };
-
-  const onNavigateToAccessibility = () => {
-    if (pathname !== '/accessibility') {
-      router.push('/accessibility');
-    }
-  };
-
+export const Navbar: React.FC<NavbarProps> = ({
+  onNavigateToAccessibility,
+  currentView = 'home',
+  onNavigateHome
+}) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  /* Collapse to the hamburger when the links no longer FIT, rather than at a
+     viewport breakpoint. A breakpoint only tracks window width, so enlarging
+     the root font size (as the accessibility widget does) widened the links
+     without ever triggering the mobile layout, and they collided with the CTA.
+     The links stay mounted while collapsed — moved out of flow but still
+     measurable — so the natural width is always known and the two states
+     cannot oscillate. */
+  const [compact, setCompact] = useState(false);
+  const navRef = useRef<HTMLElement | null>(null);
+  const brandRef = useRef<HTMLAnchorElement | null>(null);
+  const linksRef = useRef<HTMLDivElement | null>(null);
+  const actionsRef = useRef<HTMLDivElement | null>(null);
+
+  const measure = useCallback(() => {
+    const nav = navRef.current;
+    const brand = brandRef.current;
+    const links = linksRef.current;
+    const actions = actionsRef.current;
+    if (!nav || !brand || !links || !actions) return;
+
+    const GUTTER = 48; // horizontal padding + inter-group gaps
+    const available = nav.clientWidth - brand.offsetWidth - actions.offsetWidth - GUTTER;
+    const needed = links.scrollWidth;
+
+    setCompact((wasCompact) => {
+      if (!wasCompact) return needed > available;
+      // Expanding back needs clear headroom, otherwise showing the links would
+      // remove the hamburger, free space, and immediately re-trigger a collapse.
+      return !(needed < available - 64);
+    });
+  }, []);
+
+  useLayoutEffect(() => {
+    measure();
+    const observer = new ResizeObserver(measure);
+    if (navRef.current) observer.observe(navRef.current);
+    if (linksRef.current) observer.observe(linksRef.current);
+    window.addEventListener('resize', measure);
+
+    // A root font-size change does not alter <html>'s box, so ResizeObserver
+    // never fires for it. Watch the attributes that carry it instead — this is
+    // what the accessibility widget mutates when scaling text or spacing.
+    // Measure twice: once immediately, once after the style change has fully
+    // reflowed. A single pass can read the pre-reflow width and leave the bar
+    // collapsed when it should have expanded.
+    const attributes = new MutationObserver(() => {
+      window.setTimeout(measure, 0);
+      window.setTimeout(measure, 220);
+    });
+    attributes.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['style', 'class'],
+    });
+
+    // Web fonts land after first paint and change text metrics.
+    document.fonts?.ready.then(measure).catch(() => {});
+
+    return () => {
+      observer.disconnect();
+      attributes.disconnect();
+      window.removeEventListener('resize', measure);
+    };
+  }, [measure]);
+
+  // Leaving the compact layout must also close the drawer, or it would be
+  // left open with no button to close it.
+  useEffect(() => {
+    if (!compact) setMobileMenuOpen(false);
+  }, [compact]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -54,33 +113,6 @@ export const Navbar: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [mobileMenuOpen]);
 
-  // Handle hash scrolling when navigating across pages or landing on hash URLs
-  useEffect(() => {
-    const scrollToHash = () => {
-      const hash = window.location.hash;
-      if (hash) {
-        const scrollToElement = () => {
-          const el = document.querySelector(hash);
-          if (el) {
-            el.scrollIntoView({ behavior: 'smooth' });
-          }
-        };
-        // Run immediately and after slight delay to ensure Next.js route has rendered
-        scrollToElement();
-        const t1 = setTimeout(scrollToElement, 100);
-        const t2 = setTimeout(scrollToElement, 300);
-        return () => {
-          clearTimeout(t1);
-          clearTimeout(t2);
-        };
-      }
-    };
-
-    scrollToHash();
-    window.addEventListener('hashchange', scrollToHash);
-    return () => window.removeEventListener('hashchange', scrollToHash);
-  }, [pathname]);
-
   const navLinks = [
     { name: 'Engine', href: '#pipeline' },
     { name: 'Native vs Overlay', href: '#comparison' },
@@ -90,18 +122,15 @@ export const Navbar: React.FC = () => {
 
   const handleLinkClick = (href: string) => {
     setMobileMenuOpen(false);
-    const targetHash = href.startsWith('/') ? href : `/${href}`;
-    if (pathname !== '/') {
-      router.push(targetHash);
+    if (currentView !== 'home' && onNavigateHome) {
+      onNavigateHome();
+      setTimeout(() => {
+        const el = document.querySelector(href);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
     } else {
-      const selector = href.startsWith('/') ? href.slice(1) : href;
-      const el = document.querySelector(selector);
-      if (el) {
-        window.history.pushState(null, '', selector);
-        el.scrollIntoView({ behavior: 'smooth' });
-      } else {
-        router.push(targetHash);
-      }
+      const el = document.querySelector(href);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -114,11 +143,13 @@ export const Navbar: React.FC = () => {
       }`}
     >
       <nav
+        ref={navRef}
         aria-label="Primary Navigation"
-        className="w-full px-4 sm:px-6 lg:px-10 h-16 flex items-center justify-between gap-4 flex-nowrap"
+        className="relative w-full px-4 sm:px-6 lg:px-10 h-16 flex items-center justify-between gap-4 flex-nowrap"
       >
         {/* Brand Logo Link */}
         <a
+          ref={brandRef}
           href="#"
           onClick={(e) => {
             e.preventDefault();
@@ -135,13 +166,31 @@ export const Navbar: React.FC = () => {
             width={160}
             height={32}
           />
-          <span className="hidden xl:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-200/60 ml-1">
-            WCAG 2.2 AA
-          </span>
+          {!compact && (
+            <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-200/60 ml-1">
+              WCAG 2.2 AA
+            </span>
+          )}
         </a>
 
-        {/* Desktop Navigation Links - End to End, Non-wrapping */}
-        <div className="hidden xl:flex items-center gap-1 xl:gap-3 shrink min-w-0 flex-nowrap whitespace-nowrap mx-auto">
+        {/* Primary links. While compact they are taken out of flow and hidden
+            with `visibility`, which keeps them measurable but removes them from
+            both the tab order and the accessibility tree. */}
+        {/* While compact, the links live inside a zero-sized clipping box.
+            Without it the off-flow copy still extends the document's scroll
+            width and creates phantom horizontal scrolling. */}
+        <div
+          className={
+            compact ? 'absolute left-0 top-0 w-0 h-0 overflow-hidden pointer-events-none' : 'contents'
+          }
+        >
+          <div
+            ref={linksRef}
+            aria-hidden={compact || undefined}
+            className={`items-center gap-1 xl:gap-3 flex-nowrap whitespace-nowrap ${
+              compact ? 'invisible flex w-max' : 'hidden sm:flex shrink min-w-0 mx-auto'
+            }`}
+          >
           {navLinks.map((link) => (
             <a
               key={link.name}
@@ -156,8 +205,9 @@ export const Navbar: React.FC = () => {
             </a>
           ))}
           
-          <Link
-            href="/accessibility"
+          <button
+            type="button"
+            onClick={onNavigateToAccessibility}
             className={`px-2 xl:px-3 py-1.5 text-xs xl:text-sm font-medium rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 outline-none flex items-center gap-1.5 shrink-0 ${
               currentView === 'accessibility'
                 ? 'text-indigo-700 bg-indigo-50 font-semibold'
@@ -167,11 +217,12 @@ export const Navbar: React.FC = () => {
           >
             <ShieldCheck className="w-4 h-4 text-indigo-600 shrink-0" aria-hidden="true" />
             <span>a11y Statement</span>
-          </Link>
+          </button>
+          </div>
         </div>
 
         {/* Action Button & Mobile Menu Toggle */}
-        <div className="flex items-center gap-3 shrink-0 whitespace-nowrap ml-auto">
+        <div ref={actionsRef} className="flex items-center gap-3 shrink-0 whitespace-nowrap ml-auto">
           <a
             href="#demo-request"
             onClick={(e) => {
@@ -188,7 +239,7 @@ export const Navbar: React.FC = () => {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="xl:hidden p-2 rounded-lg text-slate-700 hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 outline-none shrink-0"
+            className={`${compact ? 'inline-flex' : 'hidden'} p-2 rounded-lg text-slate-700 hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 outline-none shrink-0`}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-navigation-menu"
             aria-label={mobileMenuOpen ? 'Close main navigation menu' : 'Open main navigation menu'}
@@ -203,10 +254,10 @@ export const Navbar: React.FC = () => {
       </nav>
 
       {/* Mobile Drawer Navigation */}
-      {mobileMenuOpen && (
+      {mobileMenuOpen && compact && (
         <div
           id="mobile-navigation-menu"
-          className="xl:hidden fixed inset-x-0 top-16 bg-white border-b border-slate-200 shadow-xl max-h-[calc(100vh-4rem)] overflow-y-auto z-50 animate-in slide-in-from-top-2 duration-150"
+          className="fixed inset-x-0 top-16 bg-white border-b border-slate-200 shadow-xl max-h-[calc(100vh-4rem)] overflow-y-auto z-50 animate-in slide-in-from-top-2 duration-150"
           role="dialog"
           aria-modal="true"
           aria-label="Mobile Navigation Menu"
@@ -236,9 +287,12 @@ export const Navbar: React.FC = () => {
                 </a>
               ))}
 
-              <Link
-                href="/accessibility"
-                onClick={() => setMobileMenuOpen(false)}
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  if (onNavigateToAccessibility) onNavigateToAccessibility();
+                }}
                 className="w-full text-left px-3 py-2.5 text-base font-medium text-slate-800 hover:text-indigo-600 hover:bg-slate-50 rounded-lg transition-colors flex items-center justify-between focus-visible:ring-2 focus-visible:ring-indigo-600 outline-none"
               >
                 <span className="flex items-center gap-2">
@@ -248,7 +302,7 @@ export const Navbar: React.FC = () => {
                 <span className="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">
                   Verified
                 </span>
-              </Link>
+              </button>
             </nav>
 
             <div className="pt-4 border-t border-slate-100 space-y-3">

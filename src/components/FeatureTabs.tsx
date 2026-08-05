@@ -149,7 +149,7 @@ export const FeatureTabs: React.FC = () => {
   };
 
   const speakNarration = (text: string) => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    if (!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
     setIsPlayingAudio(true);
 
@@ -164,7 +164,7 @@ export const FeatureTabs: React.FC = () => {
 
   useEffect(() => {
     return () => {
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
       }
     };
@@ -294,6 +294,8 @@ export const FeatureTabs: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowTechCode(!showTechCode)}
+                aria-expanded={showTechCode}
+                aria-label={showTechCode ? 'Hide developer view' : 'Show developer view'}
                 className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold flex items-center gap-1.5 border border-slate-700 transition-colors"
               >
                 <Code2 className="w-3.5 h-3.5" aria-hidden="true" />
@@ -339,7 +341,7 @@ export const FeatureTabs: React.FC = () => {
               {/* Before/After Visual Display */}
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <h4 className="text-base font-bold text-white flex items-center gap-2">
+                  <h3 className="text-base font-bold text-white flex items-center gap-2">
                     {isTransformed ? (
                       <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
                     ) : (
@@ -350,7 +352,7 @@ export const FeatureTabs: React.FC = () => {
                         ? activeCategory.visualPreview.afterTitle
                         : activeCategory.visualPreview.beforeTitle}
                     </span>
-                  </h4>
+                  </h3>
                   
                   <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
                     {isTransformed

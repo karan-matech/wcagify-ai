@@ -39,7 +39,7 @@ export const BuildGatekeeperDemo: React.FC = () => {
   };
 
   const speakNarration = (text: string) => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    if (!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
     setIsPlayingAudio(true);
 
@@ -54,7 +54,7 @@ export const BuildGatekeeperDemo: React.FC = () => {
 
   useEffect(() => {
     return () => {
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
       }
     };
@@ -147,6 +147,8 @@ export const BuildGatekeeperDemo: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowTechCode(!showTechCode)}
+                aria-expanded={showTechCode}
+                aria-label={showTechCode ? 'Hide developer view' : 'Show developer view'}
                 className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold flex items-center gap-1.5 border border-slate-700 transition-colors"
               >
                 <Code2 className="w-3.5 h-3.5" aria-hidden="true" />
@@ -302,7 +304,7 @@ export const BuildGatekeeperDemo: React.FC = () => {
               <div className="p-6 bg-slate-950 rounded-2xl border border-slate-800 space-y-4">
                 <div className="flex items-center gap-2 text-rose-400">
                   <ShieldAlert className="w-5 h-5 shrink-0" aria-hidden="true" />
-                  <h4 className="text-base font-bold text-white">Why This Matters</h4>
+                  <h3 className="text-base font-bold text-white">Why This Matters</h3>
                 </div>
 
                 <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">

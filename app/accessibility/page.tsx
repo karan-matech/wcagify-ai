@@ -1,5 +1,5 @@
 import React from 'react';
-import { AccessibilityStatement } from '../../pages/AccessibilityStatement';
+import { AccessibilityStatement } from '../../src/pages/AccessibilityStatement';
 
 export default function AccessibilityPage() {
   const handleBackToHome = () => {

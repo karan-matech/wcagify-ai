@@ -1,8 +1,8 @@
 import React from 'react';
-import '../index.css';
-import { SkipLink } from '../components/SkipLink';
-import { Navbar } from '../components/Navbar';
-import { Footer } from '../components/Footer';
+import '../src/index.css';
+import { SkipLink } from '../src/components/SkipLink';
+import { Navbar } from '../src/components/Navbar';
+import { Footer } from '../src/components/Footer';
 
 export interface Metadata {
   title?: string;

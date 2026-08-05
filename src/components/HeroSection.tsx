@@ -27,7 +27,11 @@ export const HeroSection: React.FC = () => {
 
           {/* H1 Headline */}
           <h1 className="text-2xl sm:text-4xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight sm:leading-[1.15] break-words px-1">
-            Building the AI Infrastructure for <span className="text-indigo-600 underline decoration-indigo-300 decoration-wavy decoration-2 underline-offset-4 sm:underline-offset-8 inline-block sm:inline">Digital Accessibility</span>
+            {/* Kept `inline` at every breakpoint: as an inline-block the
+                preceding space was dropped from the text content, so the
+                heading read as "…Infrastructure forDigital Accessibility". */}
+            Building the AI Infrastructure for{' '}
+            <span className="text-indigo-600 underline decoration-indigo-300 decoration-wavy decoration-2 underline-offset-4 sm:underline-offset-8 inline">Digital Accessibility</span>
           </h1>
 
           {/* Subheading Narrative */}
@@ -60,15 +64,15 @@ export const HeroSection: React.FC = () => {
             <div className="flex items-start gap-3 p-3.5 rounded-lg bg-white/90 border border-slate-200 shadow-sm">
               <CheckCircle2 className="w-5 h-5 text-emerald-600 mt-0.5 shrink-0" aria-hidden="true" />
               <div className="min-w-0">
-                <span className="block text-sm font-bold text-slate-900 truncate">100% Native Code</span>
-                <span className="text-xs text-slate-700 block font-medium">Zero surface widgets or overlays</span>
+                <span className="block text-sm font-bold text-slate-900">100% Native Code</span>
+                <span className="text-xs text-slate-700 block font-medium">Remediated at source, never masked</span>
               </div>
             </div>
 
             <div className="flex items-start gap-3 p-3.5 rounded-lg bg-white/90 border border-slate-200 shadow-sm">
               <ShieldAlert className="w-5 h-5 text-indigo-600 mt-0.5 shrink-0" aria-hidden="true" />
               <div className="min-w-0">
-                <span className="block text-sm font-bold text-slate-900 truncate">WCAG 2.2 AA & ADA</span>
+                <span className="block text-sm font-bold text-slate-900">WCAG 2.2 AA & ADA</span>
                 <span className="text-xs text-slate-700 block font-medium">EAA EN 301 549 Law compliant</span>
               </div>
             </div>
@@ -76,7 +80,7 @@ export const HeroSection: React.FC = () => {
             <div className="flex items-start gap-3 p-3.5 rounded-lg bg-white/90 border border-slate-200 shadow-sm">
               <Cpu className="w-5 h-5 text-indigo-600 mt-0.5 shrink-0" aria-hidden="true" />
               <div className="min-w-0">
-                <span className="block text-sm font-bold text-slate-900 truncate">AST & Tag Trees</span>
+                <span className="block text-sm font-bold text-slate-900">AST & Tag Trees</span>
                 <span className="text-xs text-slate-700 block font-medium">PDF/UA, EPUB3, DOM trees</span>
               </div>
             </div>
@@ -84,7 +88,7 @@ export const HeroSection: React.FC = () => {
             <div className="flex items-start gap-3 p-3.5 rounded-lg bg-white/90 border border-slate-200 shadow-sm">
               <FileCheck className="w-5 h-5 text-indigo-600 mt-0.5 shrink-0" aria-hidden="true" />
               <div className="min-w-0">
-                <span className="block text-sm font-bold text-slate-900 truncate">Fail-Closed Gate</span>
+                <span className="block text-sm font-bold text-slate-900">Fail-Closed Gate</span>
                 <span className="text-xs text-slate-700 block font-medium">CI/CD compilation guard</span>
               </div>
             </div>

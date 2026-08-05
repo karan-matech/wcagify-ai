@@ -1,46 +1,17 @@
-"use client";
-
 import React from 'react';
 import { ShieldCheck, Mail, MapPin, Phone, Github, Linkedin, Twitter, ArrowUp } from 'lucide-react';
-import { usePathname, useRouter } from 'next/navigation';
 
-export const Footer: React.FC = () => {
-  const pathname = usePathname();
-  const router = useRouter();
+interface FooterProps {
+  onNavigateToAccessibility?: () => void;
+  onNavigateHome?: () => void;
+}
 
-  const onNavigateHome = () => {
-    if (pathname !== '/') {
-      router.push('/');
-    }
-  };
-
-  const onNavigateToAccessibility = () => {
-    if (pathname !== '/accessibility') {
-      router.push('/accessibility');
-    }
-  };
-
+export const Footer: React.FC<FooterProps> = ({
+  onNavigateToAccessibility,
+  onNavigateHome
+}) => {
   const scrollToTop = () => {
-    if (typeof window !== 'undefined') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
-
-  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    const targetHash = href.startsWith('/') ? href : `/${href}`;
-    if (pathname !== '/') {
-      router.push(targetHash);
-    } else {
-      const selector = href.startsWith('/') ? href.slice(1) : href;
-      const el = document.querySelector(selector);
-      if (el) {
-        window.history.pushState(null, '', selector);
-        el.scrollIntoView({ behavior: 'smooth' });
-      } else {
-        router.push(targetHash);
-      }
-    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -102,29 +73,29 @@ export const Footer: React.FC = () => {
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-100">
               Platform & Pipeline
             </h3>
-            <ul className="space-y-2 text-xs">
+            <ul className="space-y-3 text-xs">
               <li>
-                <a href="/#pipeline" onClick={(e) => handleLinkClick(e, '/#pipeline')} className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded py-0.5">
+                <a href="#pipeline" className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1">
                   4-Step Transformation Engine
                 </a>
               </li>
               <li>
-                <a href="/#comparison" onClick={(e) => handleLinkClick(e, '/#comparison')} className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded py-0.5">
+                <a href="#comparison" className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1">
                   Native vs. Overlay Trap
                 </a>
               </li>
               <li>
-                <a href="/#assets" onClick={(e) => handleLinkClick(e, '/#assets')} className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded py-0.5">
+                <a href="#assets" className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1">
                   Universal Asset Engine
                 </a>
               </li>
               <li>
-                <a href="/#architecture" onClick={(e) => handleLinkClick(e, '/#architecture')} className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded py-0.5">
+                <a href="#architecture" className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1">
                   Tri-Pillar AI Architecture
                 </a>
               </li>
               <li>
-                <a href="/#gatekeeper" onClick={(e) => handleLinkClick(e, '/#gatekeeper')} className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded py-0.5">
+                <a href="#gatekeeper" className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1">
                   Fail-Closed Build Gatekeeper
                 </a>
               </li>
@@ -136,29 +107,29 @@ export const Footer: React.FC = () => {
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-100">
               Regulatory Standards
             </h3>
-            <ul className="space-y-2 text-xs">
+            <ul className="space-y-3 text-xs">
               <li>
-                <a href="/#regulatory" onClick={(e) => handleLinkClick(e, '/#regulatory')} className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded py-0.5">
+                <a href="#regulatory" className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1">
                   WCAG 2.2 Level AA Standard
                 </a>
               </li>
               <li>
-                <a href="/#regulatory" onClick={(e) => handleLinkClick(e, '/#regulatory')} className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded py-0.5">
+                <a href="#regulatory" className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1">
                   European Accessibility Act (EN 301 549)
                 </a>
               </li>
               <li>
-                <a href="/#regulatory" onClick={(e) => handleLinkClick(e, '/#regulatory')} className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded py-0.5">
+                <a href="#regulatory" className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1">
                   US ADA Title II & Section 508
                 </a>
               </li>
               <li>
-                <a href="/#assets" onClick={(e) => handleLinkClick(e, '/#assets')} className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded py-0.5">
+                <a href="#assets" className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1">
                   ISO 14289-1 PDF/UA Specifications
                 </a>
               </li>
               <li>
-                <a href="/#assets" onClick={(e) => handleLinkClick(e, '/#assets')} className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded py-0.5">
+                <a href="#assets" className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1">
                   EPUB 3.3 Publication Guidelines
                 </a>
               </li>
@@ -170,7 +141,7 @@ export const Footer: React.FC = () => {
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-100">
               Company & Policies
             </h3>
-            <ul className="space-y-2 text-xs">
+            <ul className="space-y-3 text-xs">
               <li>
                 <button
                   type="button"
@@ -182,18 +153,18 @@ export const Footer: React.FC = () => {
                 </button>
               </li>
               <li>
-                <a href="/#demo-request" onClick={(e) => handleLinkClick(e, '/#demo-request')} className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded py-0.5">
+                <a href="#demo-request" className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1">
                   Request Platform Demo
                 </a>
               </li>
               <li>
-                <span className="text-slate-500 cursor-not-allowed">Privacy Policy (SOC-2 Type II)</span>
+                <span className="text-slate-400 cursor-not-allowed">Privacy Policy (SOC-2 Type II)</span>
               </li>
               <li>
-                <span className="text-slate-500 cursor-not-allowed">Terms of Platform Service</span>
+                <span className="text-slate-400 cursor-not-allowed">Terms of Platform Service</span>
               </li>
               <li>
-                <span className="text-slate-500 cursor-not-allowed">Security & Data Governance</span>
+                <span className="text-slate-400 cursor-not-allowed">Security & Data Governance</span>
               </li>
             </ul>
           </div>

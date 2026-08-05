@@ -47,7 +47,7 @@ export const HeroTransformationPreview: React.FC = () => {
 
   // Browser Web Speech API for Screen Reader narration
   const speakNarration = (text: string) => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    if (!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
     setIsPlayingAudio(true);
 
@@ -63,7 +63,7 @@ export const HeroTransformationPreview: React.FC = () => {
   // Cancel speech on unmount
   useEffect(() => {
     return () => {
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
       }
     };
@@ -193,6 +193,8 @@ export const HeroTransformationPreview: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowTechCode(!showTechCode)}
+                aria-expanded={showTechCode}
+                aria-label={showTechCode ? 'Hide developer view' : 'Show developer view'}
                 className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold flex items-center gap-1.5 border border-slate-700 transition-colors"
                 title="Toggle code view"
               >
@@ -296,6 +298,7 @@ export const HeroTransformationPreview: React.FC = () => {
                   <input
                     type="text"
                     readOnly
+                    aria-label="Full name (demonstration field)"
                     value="John Doe"
                     tabIndex={activePersona === 'keyboard' && isTransformed ? 0 : -1}
                     className={`w-full px-3.5 py-2.5 rounded-xl bg-slate-900 text-sm text-slate-200 border transition-all ${

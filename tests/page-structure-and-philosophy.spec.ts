@@ -99,7 +99,8 @@ test.describe('WCAGify.ai Structural and Philosophy Assertions', () => {
     await expect(heading).toContainText('Accessibility Statement');
 
     // Verify contact mechanism is clearly detailed
-    const contactText = page.locator('text="karanchauhan1131@gmail.com"');
+    // The address appears on the statement page and again in the footer.
+    const contactText = page.locator('text="accessibility@wcagify.ai"').first();
     await expect(contactText).toBeVisible();
   });
 });

@@ -148,15 +148,6 @@ function isEnvironmentFailure(output: string): boolean {
   return envSignatures.some(sig => lowerOutput.includes(sig));
 }
 
-function isPlaywrightInstalled(): boolean {
-  try {
-    const pwPath = path.join(ROOT_DIR, 'node_modules', '@playwright', 'test');
-    return fs.existsSync(pwPath);
-  } catch (e) {
-    return false;
-  }
-}
-
 function printDiagnosticReport(staticResults: StaticCheckResult[], playwrightFailed: boolean, playwrightOutput?: string) {
   console.log('\n' + '='.repeat(80));
   console.log('                 WCAGify.ai BUILD GATEKEEPER DIAGNOSTIC REPORT                 ');
@@ -179,13 +170,11 @@ function printDiagnosticReport(staticResults: StaticCheckResult[], playwrightFai
 
   console.log('\n[2/2] END-TO-END ACCESSIBILITY & E2E TESTS:');
   if (playwrightFailed) {
-    const isGithubActions = process.env.GITHUB_ACTIONS === 'true';
     const isEnvIssue = playwrightOutput ? isEnvironmentFailure(playwrightOutput) : false;
-    
-    if (!isGithubActions || isEnvIssue) {
+    if (isEnvIssue) {
       console.log(`  \x1b[33m⚠️ [BYPASS]\x1b[0m E2E-GATE-003 - Playwright E2E and Axe-Core A11y Suite`);
-      console.log(`           \x1b[33mReason:\x1b[0m ${isEnvIssue ? 'Host system environment is missing graphical libraries or browser binaries.' : 'Running outside of GITHUB_ACTIONS CI environment.'}`);
-      console.log('           \x1b[33mAction:\x1b[0m Gracefully bypassing Playwright E2E tests on this host to allow seamless compilation. Full suite remains strictly enforced in CI/CD (GitHub Actions).');
+      console.log('           \x1b[33mReason:\x1b[0m Host system environment is missing graphical libraries or browser binaries (sandboxed container environment).');
+      console.log('           \x1b[33mAction:\x1b[0m Gracefully bypassing Playwright E2E tests on this host to allow compilation. Full suite remains strictly enforced in CI/CD (GitHub Actions).');
     } else {
       overallPassed = false;
       console.log(`  \x1b[31m🛑 [FAIL]\x1b[0m E2E-GATE-003 - Playwright E2E and Axe-Core A11y Suite`);
@@ -213,60 +202,24 @@ function printDiagnosticReport(staticResults: StaticCheckResult[], playwrightFai
   return overallPassed;
 }
 
-function canRunPlaywright(): boolean {
-  // If we are in a known CI environment (e.g. GitHub Actions), we must run Playwright
-  if (process.env.CI === 'true') {
-    return true;
-  }
-
-  // Check if we are on a Linux host (such as the AI Studio container or Google Cloud Run)
-  if (process.platform === 'linux') {
-    try {
-      const ldconfigRes = spawnSync('ldconfig', ['-p'], { encoding: 'utf-8', timeout: 2000 });
-      if (ldconfigRes.status === 0) {
-        const hasGLES = ldconfigRes.stdout.includes('libGLESv2');
-        const hasX264 = ldconfigRes.stdout.includes('libx264');
-        if (!hasGLES || !hasX264) {
-          return false; // Missing required headless browser dependencies
-        }
-      }
-    } catch (e) {
-      // Fallback
-    }
-  }
-
-  return true;
-}
-
 function main() {
   console.log('🚀 Initiating WCAGify.ai strict pre-build validation...');
 
   // 1. Run static checks
   const staticResults = runStaticChecks();
 
-  let playwrightFailed = false;
-  let playwrightOutput = '';
+  // 2. Run Playwright tests
+  console.log('🎭 Spawning Playwright headless test runner...');
+  
+  // Set CI environment variable to force clean output format
+  const result = spawnSync('npx', ['playwright', 'test'], {
+    env: { ...process.env, CI: 'true' },
+    encoding: 'utf-8',
+    shell: true
+  });
 
-  // 2. Pre-flight check: Is Playwright installed, and can we run it on this host?
-  if (!isPlaywrightInstalled()) {
-    playwrightFailed = true;
-    playwrightOutput = "Missing libraries: @playwright/test package is not installed in node_modules.";
-  } else if (!canRunPlaywright()) {
-    playwrightFailed = true;
-    playwrightOutput = "Missing libraries: libGLESv2.so.2 (Simulated bypass due to missing host dependencies)";
-  } else {
-    console.log('🎭 Spawning Playwright headless test runner...');
-    
-    // Set CI environment variable to force clean output format
-    const result = spawnSync('npx', ['playwright', 'test'], {
-      env: { ...process.env, CI: 'true' },
-      encoding: 'utf-8',
-      shell: true
-    });
-
-    playwrightFailed = result.status !== 0;
-    playwrightOutput = result.stdout || result.stderr || 'No output from Playwright.';
-  }
+  const playwrightFailed = result.status !== 0;
+  const playwrightOutput = result.stdout || result.stderr || 'No output from Playwright.';
 
   // 3. Print combined audit report
   const passed = printDiagnosticReport(staticResults, playwrightFailed, playwrightOutput);

@@ -1,11 +1,11 @@
 import React from 'react';
-import { HeroSection } from '../components/HeroSection';
-import { HeroTransformationPreview } from '../components/HeroTransformationPreview';
-import { OverlayVsNative } from '../components/OverlayVsNative';
-import { FeatureTabs } from '../components/FeatureTabs';
-import { ArchitectureTriPillar } from '../components/ArchitectureTriPillar';
-import { BuildGatekeeperDemo } from '../components/BuildGatekeeperDemo';
-import { DemoRequestForm } from '../components/DemoRequestForm';
+import { HeroSection } from '../src/components/HeroSection';
+import { HeroTransformationPreview } from '../src/components/HeroTransformationPreview';
+import { OverlayVsNative } from '../src/components/OverlayVsNative';
+import { FeatureTabs } from '../src/components/FeatureTabs';
+import { ArchitectureTriPillar } from '../src/components/ArchitectureTriPillar';
+import { BuildGatekeeperDemo } from '../src/components/BuildGatekeeperDemo';
+import { DemoRequestForm } from '../src/components/DemoRequestForm';
 
 export default function HomePage() {
   return (
