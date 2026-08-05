@@ -1,0 +1,39 @@
+name: WCAGify.ai Continuous Integration & Quality Gatekeeper
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-validate:
+    name: Fail-Closed QA & Compilation Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Check out repository code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js runtime environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: 📦 Install project dependencies
+        run: npm ci || npm install
+
+      - name: 🎭 Install Playwright headless browsers with system dependencies
+        run: npx playwright install --with-deps
+
+      - name: 🛑 Execute Fail-Closed Build Gatekeeper (Static Audit + Playwright + Axe-Core A11y Suite)
+        run: npm run build
+
+      - name: 📁 Archive Playwright html failure report (if tests failed)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14

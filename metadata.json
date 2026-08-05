@@ -1,0 +1,6 @@
+{
+  "name": "WCAGify.ai",
+  "description": "AI infrastructure for digital accessibility across Web, Documents, Publishing, and Enterprise Knowledge.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
