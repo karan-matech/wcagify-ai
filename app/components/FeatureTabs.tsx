@@ -14,8 +14,6 @@ import {
   Volume2,
   ShieldCheck,
   Code2,
-  ArrowRight,
-  Eye,
   FileCheck,
   Layers,
   Check,

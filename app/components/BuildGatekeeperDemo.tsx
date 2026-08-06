@@ -5,18 +5,13 @@ import {
   ShieldAlert,
   ShieldCheck,
   Play,
-  CheckCircle2,
-  AlertTriangle,
   RotateCcw,
-  Sparkles,
   Wand2,
   Volume2,
   Lock,
-  Unlock,
   Check,
   X,
   Code2,
-  ArrowRight,
   Shield,
 } from "lucide-react";
 

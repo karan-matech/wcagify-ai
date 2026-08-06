@@ -4,9 +4,6 @@ import {
   AlertTriangle,
   CheckCircle2,
   ShieldAlert,
-  Cpu,
-  Lock,
-  ArrowUpRight,
 } from "lucide-react";
 
 export const OverlayVsNative: React.FC = () => {
