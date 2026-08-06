@@ -1,7 +1,22 @@
+# Dependencies
 node_modules/
+
+# Build Outputs
+dist/
 build/
-coverage/
-.DS_Store
-*.log
+.next/
+
+# Environment & Secrets
 .env*
 !.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# Testing & Coverage
+coverage/
+test-results/
+
+# Lock files
+package-lock.json
