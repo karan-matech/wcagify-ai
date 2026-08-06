@@ -1,3 +1,4 @@
+"use client";
 import React, {
   useState,
   useEffect,
@@ -6,6 +7,7 @@ import React, {
   useLayoutEffect,
 } from "react";
 import { Menu, X, ArrowRight, ShieldCheck } from "lucide-react";
+import Link from "next/link";
 
 interface NavbarProps {
   onNavigateToAccessibility?: () => void;
@@ -171,9 +173,9 @@ export const Navbar: React.FC<NavbarProps> = ({
         className="relative w-full px-4 sm:px-6 lg:px-10 h-16 flex items-center justify-between gap-4 flex-nowrap"
       >
         {/* Brand Logo Link */}
-        <a
+        <Link
           ref={brandRef}
-          href="#"
+          href="/"
           onClick={(e) => {
             e.preventDefault();
             if (onNavigateHome) onNavigateHome();
@@ -192,7 +194,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-200/60 ml-1">
             WCAG 2.2 AA
           </span>
-        </a>
+        </Link>
 
         {/* Primary links */}
         <div
@@ -205,9 +207,9 @@ export const Navbar: React.FC<NavbarProps> = ({
           }`}
         >
           {navLinks.map((link) => (
-            <a
+            <button
               key={link.name}
-              href={link.href}
+              type="button"
               onClick={(e) => {
                 e.preventDefault();
                 handleLinkClick(link.href);
@@ -215,7 +217,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="px-2 xl:px-3 py-1.5 text-xs xl:text-sm font-medium text-slate-700 hover:text-indigo-600 hover:bg-slate-100 rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 outline-none shrink-0"
             >
               {link.name}
-            </a>
+            </button>
           ))}
 
           <button
@@ -241,8 +243,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           ref={actionsRef}
           className="flex items-center gap-3 shrink-0 whitespace-nowrap ml-auto"
         >
-          <a
-            href="#demo-request"
+          <button
+            type="button"
             onClick={(e) => {
               e.preventDefault();
               handleLinkClick("#demo-request");
@@ -254,7 +256,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="ml-1.5 w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform"
               aria-hidden="true"
             />
-          </a>
+          </button>
 
           {/* Mobile menu button */}
           <button
@@ -303,24 +305,24 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
                   Navigation
                 </span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-700 border border-emerald-200">
                   WCAG 2.2 AA Compliant
                 </span>
               </div>
 
               <nav aria-label="Mobile Navigation Links" className="space-y-1">
                 {navLinks.map((link) => (
-                  <a
+                  <button
                     key={link.name}
-                    href={link.href}
+                    type="button"
                     onClick={(e) => {
                       e.preventDefault();
                       handleLinkClick(link.href);
                     }}
-                    className="block px-3 py-2.5 text-base font-medium text-slate-800 hover:text-indigo-600 hover:bg-slate-50 rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-indigo-600 outline-none"
+                    className="block w-full text-left px-3 py-2.5 text-base font-medium text-slate-800 hover:text-indigo-600 hover:bg-slate-50 rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-indigo-600 outline-none"
                   >
                     {link.name}
-                  </a>
+                  </button>
                 ))}
 
                 <button
@@ -345,8 +347,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               </nav>
 
               <div className="pt-4 border-t border-slate-100 space-y-3">
-                <a
-                  href="#demo-request"
+                <button
+                  type="button"
                   onClick={(e) => {
                     e.preventDefault();
                     handleLinkClick("#demo-request");
@@ -355,7 +357,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 >
                   Request Platform Demo
                   <ArrowRight className="ml-2 w-5 h-5" aria-hidden="true" />
-                </a>
+                </button>
               </div>
             </div>
           </div>

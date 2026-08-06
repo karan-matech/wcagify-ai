@@ -1,19 +1,28 @@
-import React from 'react';
-import '../src/index.css';
-import { SkipLink } from '../src/components/SkipLink';
-import { Navbar } from '../src/components/Navbar';
-import { Footer } from '../src/components/Footer';
+import "./globals.css";
+import { Inter } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { WcagifyWidget } from "./components/accessibility-widget/WcagifyWidget";
 
-export interface Metadata {
-  title?: string;
-  description?: string;
-  keywords?: string[];
-}
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
-  title: 'WCAGify.ai — The AI Infrastructure for Digital Accessibility',
-  description: 'WCAGify.ai transforms inaccessible websites, SaaS applications, PDFs, EPUBs, and enterprise content into natively compliant digital assets directly at the source code level.',
-  keywords: ['Digital Accessibility', 'WCAG 2.2 AA', 'EAA EN 301 549', 'ADA Title II', 'Section 508', 'AI Accessibility', 'PDF/UA'],
+  title: "WCAGify.ai",
+  description:
+    "Native AI Accessibility Remediation for Websites, PDFs, EPUBs, and Enterprise Documents",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
@@ -22,13 +31,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-[#FAFAFA] text-slate-900 font-sans flex flex-col selection:bg-indigo-500 selection:text-white antialiased">
-        <SkipLink />
-        <Navbar />
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+      <body
+        className={`${inter.className} ${inter.variable} min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased`}
+      >
         {children}
-        <Footer />
       </body>
+      <WcagifyWidget />
     </html>
   );
 }
