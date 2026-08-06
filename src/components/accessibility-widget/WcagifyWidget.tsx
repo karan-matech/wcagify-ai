@@ -38,6 +38,10 @@ export interface WcagifyWidgetProps {
   position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
   storageKey?: string;
   accentColor?: string;
+  /** Opt in to full-dictionary lookups. Null (the default) keeps the Dictionary
+   *  tool entirely offline, answering from the bundled glossary only. Any value
+   *  here means the selected word is sent to that URL. */
+  dictionaryEndpoint?: string | null;
 }
 
 const DEFAULT_STORAGE_KEY = 'wcagify.a11y.preferences.v1';
@@ -523,13 +527,20 @@ html[data-a11y-readable="on"] [${ROOT_ATTR}] :is(main, [role="main"], article) :
   background: #111827; padding: 10px; display: flex; flex-direction: column; gap: 6px;
   box-shadow: 0 -10px 30px rgba(0,0,0,.4);
 }
-.wcagify-vk-row { display: flex; gap: 6px; justify-content: center; }
+.wcagify-vk-row { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
 .wcagify-vk button {
   min-width: 40px; height: 44px; padding: 0 10px; border-radius: 8px; border: 1px solid #374151;
   background: #1f2937; color: #fff; font-size: 15px; font-weight: 600; cursor: pointer;
+  flex: 0 1 auto;
 }
 .wcagify-vk button:hover { background: #374151; }
 .wcagify-vk button.is-wide { min-width: 90px; }
+@media (max-width: 480px) {
+  .wcagify-vk { padding: 8px 6px; }
+  .wcagify-vk-row { gap: 4px; }
+  .wcagify-vk button { min-width: 28px; padding: 0 4px; font-size: 14px; }
+  .wcagify-vk button.is-wide { min-width: 60px; }
+}
 .wcagify-vk-head { display: flex; align-items: center; justify-content: space-between; color: #cbd5e1; font-size: 12px; padding: 0 4px; }
 .wcagify-vk-head strong { color: #fff; font-size: 13px; }
 
@@ -767,8 +778,17 @@ function contrastRatio(a: RGB, b: RGB): number {
 }
 
 /** Black or white, whichever reads better on the given surface. */
+/** Pick whichever of the two inks actually contrasts better against `rgb`.
+ *  A fixed luminance cut gets mid-tones wrong: the point where white stops
+ *  winning is ~0.179 (sqrt(1.05 * 0.05) - 0.05), not 0.4, so a background like
+ *  a 60%-opacity tint over black was being given white ink at 3.1:1 when the
+ *  dark ink would have reached 5.4:1. */
+const INK_DARK = '#111827';
+const INK_LIGHT = '#FFFFFF';
 function inkFor(rgb: RGB): string {
-  return relativeLuminance(rgb) > 0.4 ? '#111827' : '#FFFFFF';
+  return contrastRatio(hexToRgb(INK_DARK), rgb) >= contrastRatio(hexToRgb(INK_LIGHT), rgb)
+    ? INK_DARK
+    : INK_LIGHT;
 }
 
 /** Convenience wrapper for the fixed palette (hex in, hex out). */
@@ -779,14 +799,62 @@ function readableInk(hex: string): string {
 /** The colour actually painted behind `el` — the nearest ancestor, including
  *  itself, with a non-transparent background. CSS cannot express this, which
  *  is why custom text colour is resolved in JS. */
+/** Alpha-aware variant: returns [r,g,b,a], or null only when fully transparent.
+ *  parseComputedColor deliberately drops alpha (its callers want a solid swatch
+ *  colour), which is wrong for measuring what is actually painted behind text —
+ *  a 20%-opacity tint reads as its full-strength colour, and a chip like
+ *  `bg-rose-500/20` then measures mid-tone when the painted result is pale. */
+function parseComputedColorAlpha(input: string): [number, number, number, number] | null {
+  const rgb = parseComputedColor(input);
+  if (!rgb) return null;
+  const legacy = input.match(/^rgba?\(([^)]+)\)$/);
+  if (legacy) {
+    const parts = legacy[1].split(/[,\s/]+/).filter(Boolean).map(Number);
+    const alpha = parts.length > 3 ? parts[3] : 1;
+    return [rgb[0], rgb[1], rgb[2], alpha];
+  }
+  // Modern syntaxes (oklab/oklch/color-mix) go through the canvas probe, which
+  // reports alpha in the fourth channel.
+  const slash = input.match(/\/\s*([\d.]+%?)\s*\)/);
+  if (slash) {
+    const raw = slash[1];
+    const alpha = raw.endsWith('%') ? parseFloat(raw) / 100 : parseFloat(raw);
+    if (!Number.isNaN(alpha)) return [rgb[0], rgb[1], rgb[2], alpha];
+  }
+  return [rgb[0], rgb[1], rgb[2], 1];
+}
+
+/** The colour actually painted behind an element's own text, compositing every
+ *  translucent layer down onto the first opaque one. */
 function effectiveBackground(el: HTMLElement): RGB {
+  const layers: [number, number, number, number][] = [];
   let node: HTMLElement | null = el;
   while (node) {
-    const parsed = parseComputedColor(window.getComputedStyle(node).backgroundColor);
-    if (parsed) return parsed;
+    const parsed = parseComputedColorAlpha(window.getComputedStyle(node).backgroundColor);
+    if (parsed) {
+      layers.push(parsed);
+      if (parsed[3] >= 1) break;
+    }
     node = node.parentElement;
   }
-  return [255, 255, 255];
+  // Start from the deepest opaque layer (or paper white) and paint forward.
+  let base: RGB =
+    layers.length && layers[layers.length - 1][3] >= 1
+      ? [layers[layers.length - 1][0], layers[layers.length - 1][1], layers[layers.length - 1][2]]
+      : [255, 255, 255];
+  for (let i = layers.length - 1; i >= 0; i -= 1) {
+    const [r, g, b, a] = layers[i];
+    if (a >= 1) {
+      base = [r, g, b];
+      continue;
+    }
+    base = [
+      Math.round(r * a + base[0] * (1 - a)),
+      Math.round(g * a + base[1] * (1 - a)),
+      Math.round(b * a + base[2] * (1 - a)),
+    ];
+  }
+  return base;
 }
 
 /** Stable identity for a panel control across re-renders.
@@ -1057,16 +1125,43 @@ const TextMagnifier: React.FC<{ root: HTMLElement | null }> = ({ root }) => {
 };
 
 /** Dictionary: select a word to look it up.
- *  PRIVACY: this is the only feature that contacts a third party. It sends the
- *  selected word — nothing else, no page content, no identifiers — to the free
- *  dictionaryapi.dev service, and only while the user has switched the tool on.
- *  Swap DICTIONARY_ENDPOINT for a self-hosted wordlist to keep it fully local. */
-const DICTIONARY_ENDPOINT = 'https://api.dictionaryapi.dev/api/v2/entries/en/';
+ *  PRIVACY: nothing leaves the browser by default. Lookups are answered from the
+ *  bundled glossary below, which covers the accessibility and compliance
+ *  vocabulary this site actually uses. A word that is not in the glossary
+ *  reports that plainly rather than quietly calling out to a third party.
+ *
+ *  An integrator who wants full-dictionary coverage can opt in by passing
+ *  `dictionaryEndpoint` — point it at a self-hosted wordlist to stay local, or
+ *  at a public API and accept that the selected word (nothing else: no page
+ *  content, no identifiers) is sent there while the tool is switched on. */
+const GLOSSARY: Record<string, { phonetic?: string; meanings: { partOfSpeech: string; definition: string }[] }> = {
+  accessibility: { phonetic: '/əkˌsesəˈbilədē/', meanings: [{ partOfSpeech: 'noun', definition: 'The quality of being usable by people with the widest range of abilities, including those using assistive technology.' }] },
+  accessible: { meanings: [{ partOfSpeech: 'adjective', definition: 'Able to be reached, understood or operated — including by people with disabilities.' }] },
+  wcag: { meanings: [{ partOfSpeech: 'noun', definition: 'Web Content Accessibility Guidelines: the international standard defining how to make web content perceivable, operable, understandable and robust.' }] },
+  conformance: { meanings: [{ partOfSpeech: 'noun', definition: 'Meeting all the success criteria of a standard at a stated level, such as WCAG 2.2 Level AA.' }] },
+  compliant: { meanings: [{ partOfSpeech: 'adjective', definition: 'Meeting the requirements of a rule, standard or law.' }] },
+  remediation: { meanings: [{ partOfSpeech: 'noun', definition: 'The work of correcting accessibility defects — at the source, in this platform’s sense, rather than masking them at runtime.' }] },
+  overlay: { meanings: [{ partOfSpeech: 'noun', definition: 'A script layered over a finished page that attempts to patch accessibility problems in the browser without changing the underlying source.' }] },
+  semantic: { meanings: [{ partOfSpeech: 'adjective', definition: 'Describing markup that conveys meaning and role, not just appearance, so assistive technology can interpret it.' }] },
+  aria: { meanings: [{ partOfSpeech: 'noun', definition: 'Accessible Rich Internet Applications: attributes that expose roles, states and properties to assistive technology.' }] },
+  landmark: { meanings: [{ partOfSpeech: 'noun', definition: 'A region of a page — banner, navigation, main, contentinfo — that lets users jump straight to a section.' }] },
+  contrast: { meanings: [{ partOfSpeech: 'noun', definition: 'The measured luminance difference between text and its background, expressed as a ratio such as 4.5:1.' }] },
+  barriers: { meanings: [{ partOfSpeech: 'noun', definition: 'Design or code choices that prevent someone from perceiving, operating or understanding content.' }] },
+  assistive: { meanings: [{ partOfSpeech: 'adjective', definition: 'Describing technology — screen readers, magnifiers, switch devices — that helps someone use a computer.' }] },
+  dyslexia: { meanings: [{ partOfSpeech: 'noun', definition: 'A common learning difference affecting the accuracy and fluency of reading and spelling.' }] },
+  epilepsy: { meanings: [{ partOfSpeech: 'noun', definition: 'A neurological condition in which seizures may be triggered by, among other things, flashing or strobing content.' }] },
+  native: { meanings: [{ partOfSpeech: 'adjective', definition: 'Belonging to the source itself rather than added by an external layer.' }] },
+  audit: { meanings: [{ partOfSpeech: 'noun', definition: 'A structured review checking content against accessibility success criteria and recording what fails.' }] },
+  tagging: { meanings: [{ partOfSpeech: 'noun', definition: 'Adding the structural markup — headings, lists, tables, reading order — that makes a document navigable.' }] },
+};
 
-const DictionaryPopover: React.FC<{ root: HTMLElement | null; announce: (m: string) => void }> = ({
-  root,
-  announce,
-}) => {
+const DEFAULT_DICTIONARY_ENDPOINT: string | null = null;
+
+const DictionaryPopover: React.FC<{
+  root: HTMLElement | null;
+  announce: (m: string) => void;
+  endpoint: string | null;
+}> = ({ root, announce, endpoint }) => {
   const [entry, setEntry] = useState<{
     word: string;
     phonetic?: string;
@@ -1094,11 +1189,27 @@ const DictionaryPopover: React.FC<{ root: HTMLElement | null; announce: (m: stri
       const x = Math.min(Math.max(8, (rect?.left ?? 40)), window.innerWidth - 350);
       const y = Math.min((rect?.bottom ?? 40) + 8, window.innerHeight - 320);
 
+      const key = raw.toLowerCase();
+
+      // Local glossary first: instant, and no request leaves the browser.
+      const local = GLOSSARY[key];
+      if (local) {
+        setEntry({ word: raw, phonetic: local.phonetic, meanings: local.meanings, x, y });
+        announce(`${raw}: ${local.meanings[0].definition}`);
+        return;
+      }
+
+      if (!endpoint) {
+        setEntry({ word: raw, meanings: [], error: 'Not in the offline glossary.', x, y });
+        announce(`${raw} is not in the offline glossary.`);
+        return;
+      }
+
       setEntry({ word: raw, meanings: [], x, y });
       announce(`Looking up ${raw}`);
 
       try {
-        const response = await fetch(DICTIONARY_ENDPOINT + encodeURIComponent(raw.toLowerCase()));
+        const response = await fetch(endpoint + encodeURIComponent(key));
         if (aborted) return;
         if (!response.ok) {
           setEntry({ word: raw, meanings: [], error: 'No definition found.', x, y });
@@ -1115,8 +1226,13 @@ const DictionaryPopover: React.FC<{ root: HTMLElement | null; announce: (m: stri
         setEntry({ word: first?.word ?? raw, phonetic: first?.phonetic, meanings, x, y });
         announce(meanings[0] ? `${raw}: ${meanings[0].definition}` : `No definition found for ${raw}.`);
       } catch {
+        // Note: a remote endpoint whose *error* responses omit CORS headers
+        // (dictionaryapi.dev does exactly this) surfaces every miss here rather
+        // than in the !response.ok branch above, so this wording has to cover
+        // both "no such word" and "cannot reach the service".
         if (!aborted) {
-          setEntry({ word: raw, meanings: [], error: 'Lookup unavailable offline.', x, y });
+          setEntry({ word: raw, meanings: [], error: 'No definition available.', x, y });
+          announce(`No definition available for ${raw}.`);
         }
       }
     };
@@ -1680,9 +1796,25 @@ function useVoiceCommands(
       if (clickMatch) {
         const phrase = clickMatch[1].replace(/[.?!]$/, '').trim();
         const candidates = pageElements(INTERACTIVE_SELECTOR, root);
+        // Speech rarely reproduces a label verbatim, and responsive layouts hide
+        // the control whose name matches exactly (the collapsed nav link at
+        // mobile widths), so fall back to an in-order word match: "request demo"
+        // still reaches "Request Platform Demo".
+        const words = phrase.split(/\s+/).filter(Boolean);
+        const inOrder = (name: string) => {
+          let from = 0;
+          return words.every((w) => {
+            const at = name.indexOf(w, from);
+            if (at < 0) return false;
+            from = at + w.length;
+            return true;
+          });
+        };
         const hit =
           candidates.find((el) => accessibleName(el).toLowerCase() === phrase) ||
-          candidates.find((el) => accessibleName(el).toLowerCase().includes(phrase));
+          candidates.find((el) => accessibleName(el).toLowerCase().startsWith(phrase)) ||
+          candidates.find((el) => accessibleName(el).toLowerCase().includes(phrase)) ||
+          candidates.find((el) => inOrder(accessibleName(el).toLowerCase()));
         if (hit) {
           announce(`Clicking ${accessibleName(hit)}`);
           hit.focus({ preventScroll: true });
@@ -1743,6 +1875,7 @@ export const WcagifyWidget: React.FC<WcagifyWidgetProps> = ({
   position = 'bottom-right',
   storageKey = DEFAULT_STORAGE_KEY,
   accentColor,
+  dictionaryEndpoint = DEFAULT_DICTIONARY_ENDPOINT,
 }) => {
   const [mounted, setMounted] = useState(false);
   const [hostRoot, setHostRoot] = useState<HTMLElement | null>(null);
@@ -1958,7 +2091,12 @@ export const WcagifyWidget: React.FC<WcagifyWidgetProps> = ({
       return;
     }
 
-    const TEXT_SELECTOR = 'p,li,dd,dt,span,label,td,th,blockquote,figcaption,a,button,h1,h2,h3,h4,h5,h6,strong,em,small';
+    // `div` belongs here even though it is a layout element: the custom-bg rule
+    // flattens div backgrounds, so a div that directly owns text (a numbered
+    // step chip, for one) keeps its original ink over the new background unless
+    // it is re-inked too. The ownsText guard below stops wrappers cascading.
+    const TEXT_SELECTOR =
+      'p,li,dd,dt,span,label,td,th,blockquote,figcaption,a,button,div,h1,h2,h3,h4,h5,h6,strong,em,small';
 
     const apply = () => {
       clearInk();
@@ -1978,8 +2116,15 @@ export const WcagifyWidget: React.FC<WcagifyWidgetProps> = ({
         if (!desiredHex) return;
 
         const background = effectiveBackground(el);
+        // WCAG 1.4.3: 3:1 is the large-text allowance only; body copy needs 4.5.
+        const style = window.getComputedStyle(el);
+        const px = parseFloat(style.fontSize);
+        const isLarge = px >= 24 || (px >= 18.66 && Number(style.fontWeight) >= 700);
+        const required = isLarge ? 3 : 4.5;
         const chosen =
-          contrastRatio(hexToRgb(desiredHex), background) >= 3 ? desiredHex : inkFor(background);
+          contrastRatio(hexToRgb(desiredHex), background) >= required
+            ? desiredHex
+            : inkFor(background);
 
         el.style.setProperty('color', chosen, 'important');
         el.style.setProperty('-webkit-text-fill-color', chosen, 'important');
@@ -2271,7 +2416,9 @@ export const WcagifyWidget: React.FC<WcagifyWidgetProps> = ({
 
       {settings.magnifier && <MagnifierLens root={hostRoot} />}
       {settings.textMagnifier && <TextMagnifier root={hostRoot} />}
-      {settings.dictionary && <DictionaryPopover root={hostRoot} announce={announce} />}
+      {settings.dictionary && (
+        <DictionaryPopover root={hostRoot} announce={announce} endpoint={dictionaryEndpoint} />
+      )}
       {settings.virtualKeyboard && (
         <VirtualKeyboard onClose={() => update({ virtualKeyboard: false }, 'Virtual keyboard closed.')} />
       )}

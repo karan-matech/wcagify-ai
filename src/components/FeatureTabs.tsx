@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Layout,
@@ -45,6 +45,7 @@ export const FeatureTabs: React.FC = () => {
   const [isScanning, setIsScanning] = useState<boolean>(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState<boolean>(false);
   const [showTechCode, setShowTechCode] = useState<boolean>(false);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const categories: AssetCategory[] = [
     {
@@ -176,20 +177,21 @@ export const FeatureTabs: React.FC = () => {
       newIndex = (index + 1) % categories.length;
     } else if (e.key === 'ArrowLeft') {
       newIndex = (index - 1 + categories.length) % categories.length;
+    } else if (e.key === 'Home') {
+      newIndex = 0;
+    } else if (e.key === 'End') {
+      newIndex = categories.length - 1;
     } else {
       return;
     }
     e.preventDefault();
-    const nextCategory = categories[newIndex];
-    setActiveTabId(nextCategory.id);
+    setActiveTabId(categories[newIndex].id);
     setIsTransformed(true);
-    // Move focus to next tab element
-    setTimeout(() => {
-      const nextTabEl = document.getElementById(`tab-${nextCategory.id}`);
-      if (nextTabEl) {
-        nextTabEl.focus();
-      }
-    }, 0);
+    // Focus the tab directly rather than through a timer. The button is already
+    // in the DOM — only its tabIndex changes on re-render — so deferring the
+    // call just raced the commit, and a second arrow press arriving before the
+    // timer fired left focus on the old tab.
+    tabRefs.current[newIndex]?.focus();
   };
 
   return (
@@ -224,6 +226,9 @@ export const FeatureTabs: React.FC = () => {
                 type="button"
                 role="tab"
                 id={`tab-${cat.id}`}
+                ref={(el) => {
+                  tabRefs.current[idx] = el;
+                }}
                 aria-selected={isSelected}
                 aria-controls={`panel-${cat.id}`}
                 tabIndex={isSelected ? 0 : -1}
