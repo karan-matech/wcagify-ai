@@ -1,13 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import {
-  Cpu,
-  ShieldCheck,
-  UserCheck,
-  Sparkles,
-  Check,
-  ArrowRight,
-} from "lucide-react";
+import { Cpu, UserCheck, Sparkles, Check, ArrowRight } from "lucide-react";
 
 export const ArchitectureTriPillar: React.FC = () => {
   const [selectedPillar, setSelectedPillar] = useState<number>(1);
