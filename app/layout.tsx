@@ -1,7 +1,7 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import type { Metadata, Viewport } from "next";
-import { WcagifyWidget } from "./components/accessibility-widget/WcagifyWidget";
+import WcagifyWidget from "./components/accessibility-widget/WcagifyWidget";
 
 const inter = Inter({
   subsets: ["latin"],

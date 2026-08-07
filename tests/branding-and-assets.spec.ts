@@ -25,9 +25,6 @@ test.describe("WCAGify.ai Brand and Styling Verification", () => {
     await page.goto("/");
 
     const navLogoImg = page.locator("nav img").first();
-    const navLogoSvg = page
-      .locator('nav a[aria-label*="logo"], nav svg[aria-label*="logo"]')
-      .first();
 
     const hasNavImg = (await navLogoImg.count()) > 0;
     if (hasNavImg) {
