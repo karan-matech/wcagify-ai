@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enable React 19 Server Components
-  reactStrictMode: true,
-  
-  // Image optimization
+  reactStrictMode: true,  
   images: {
     remotePatterns: [
       {
@@ -11,30 +8,19 @@ const nextConfig = {
         hostname: '**.googleusercontent.com',
       },
     ],
-  },
-  
-  // Output target for App Router
-  output: 'standalone',
-  
-  // Experimental features for Next.js 15
+  },  
+  output: 'standalone',  
   experimental: {
-    // Enable appDir (App Router) - this is default in Next.js 15
     appDir: true,
-  },
-  
-  // TypeScript configuration
+  },  
   typescript: {
-    // Don't fail on build for type errors (we'll run tsc separately)
     ignoreBuildErrors: false,
   },
-  
-  // ESLint configuration
   eslint: {
-    // Don't fail on build for lint errors
     ignoreDuringBuilds: false,
   },
+  devIndicators: false,
   
-  // Security headers
   async headers() {
     return [
       {

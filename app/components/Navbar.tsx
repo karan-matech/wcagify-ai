@@ -220,9 +220,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           ))}
 
-          <button
-            type="button"
-            onClick={onNavigateToAccessibility}
+          <Link
+            href="/accessibility"
             className={`px-2 xl:px-3 py-1.5 text-xs xl:text-sm font-medium rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 outline-none flex items-center gap-1.5 shrink-0 ${
               currentView === "accessibility"
                 ? "text-indigo-700 bg-indigo-50 font-semibold"
@@ -235,7 +234,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               aria-hidden="true"
             />
             <span>a11y Statement</span>
-          </button>
+          </Link>
         </div>
 
         {/* Action Button & Mobile Menu Toggle */}
@@ -325,12 +324,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </button>
                 ))}
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    if (onNavigateToAccessibility) onNavigateToAccessibility();
-                  }}
+                <Link
+                  href="/accessibility"
+                  onClick={() => setMobileMenuOpen(false)}
                   className="w-full text-left px-3 py-2.5 text-base font-medium text-slate-800 hover:text-indigo-600 hover:bg-slate-50 rounded-lg transition-colors flex items-center justify-between focus-visible:ring-2 focus-visible:ring-indigo-600 outline-none"
                 >
                   <span className="flex items-center gap-2">
@@ -343,7 +339,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <span className="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">
                     Verified
                   </span>
-                </button>
+                </Link>
               </nav>
 
               <div className="pt-4 border-t border-slate-100 space-y-3">

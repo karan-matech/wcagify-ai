@@ -5,10 +5,6 @@ import {
   Globe,
   BookOpen,
   AlertTriangle,
-  // Eye,
-  // Keyboard,
-  // Brain,
-  // Settings,
 } from "lucide-react";
 
 export const metadata = {
@@ -79,7 +75,6 @@ export default function AccessibilityStatementPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Header */}
       <div className="bg-white border-b border-slate-200 py-12 sm:py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-200 mb-4">
@@ -100,9 +95,7 @@ export default function AccessibilityStatementPage() {
         </div>
       </div>
 
-      {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-12">
-        {/* Commitment Section */}
         <section className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
           <h2 className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
             <ShieldCheck
@@ -131,7 +124,6 @@ export default function AccessibilityStatementPage() {
           </div>
         </section>
 
-        {/* Compliance Standards */}
         <section className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
           <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
             <CheckCircle2
@@ -164,7 +156,6 @@ export default function AccessibilityStatementPage() {
           </div>
         </section>
 
-        {/* Accessibility Principles */}
         <section className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
           <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
             <AlertTriangle
@@ -201,7 +192,6 @@ export default function AccessibilityStatementPage() {
           </div>
         </section>
 
-        {/* Feedback Section */}
         <section className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
           <h2 className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
             <AlertTriangle
