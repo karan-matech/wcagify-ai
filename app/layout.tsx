@@ -3,6 +3,8 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import type { Metadata, Viewport } from "next";
 import WcagifyWidget from "./components/accessibility-widget/WcagifyWidget";
+import { Navbar } from "./components/Navbar";
+import { Footer } from "./components/Footer";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -100,7 +102,9 @@ export default function RootLayout({
       <body
         className={`${inter.className} ${inter.variable} min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased`}
       >
+        <Navbar />
         {children}
+        <Footer />
         <WcagifyWidget />
       </body>
     </html>
