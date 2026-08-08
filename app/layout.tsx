@@ -2,7 +2,7 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import type { Metadata, Viewport } from "next";
-import WcagifyWidget from "./components/accessibility-widget/WcagifyWidget";
+// import WcagifyWidget from "./components/accessibility-widget/WcagifyWidget";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 
@@ -98,6 +98,11 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        <script
+          src="https://wcagify-widget.s3.ap-south-1.amazonaws.com/wcagify-1.0.0.min.js"
+          defer={true}
+          data-wcagify-root=""
+        />
       </head>
       <body
         className={`${inter.className} ${inter.variable} min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased`}
@@ -105,7 +110,7 @@ export default function RootLayout({
         <Navbar />
         {children}
         <Footer />
-        <WcagifyWidget />
+        {/* <WcagifyWidget /> */}
       </body>
     </html>
   );

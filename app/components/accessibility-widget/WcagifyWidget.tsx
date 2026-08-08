@@ -3627,7 +3627,7 @@ export const WcagifyWidget: React.FC<WcagifyWidgetProps> = ({
               </section>
             </div>
 
-            <div className="wcagify-foot">
+            {/* <div className="wcagify-foot">
               <button
                 type="button"
                 className="wcagify-reset"
@@ -3642,6 +3642,66 @@ export const WcagifyWidget: React.FC<WcagifyWidgetProps> = ({
                 <br />
                 Alt&nbsp;+&nbsp;A toggles this panel
               </small>
+            </div> */}
+            <div className="wcagify-foot">
+              <button
+                type="button"
+                className="wcagify-reset"
+                onClick={resetAll}
+              >
+                <Icon name="reset" size={16} aria-hidden="true" /> Reset all
+              </button>
+              <small>
+                {activeCount === 0
+                  ? "No preferences active"
+                  : `${activeCount} preference${activeCount === 1 ? "" : "s"} active`}
+                <br />
+                Alt&nbsp;+&nbsp;A toggles this panel
+              </small>
+            </div>
+
+            {/* WCAGify & MoveAhead Platform Branding */}
+            <div
+              className="wcagify-branding"
+              style={{
+                padding: "0px 16px 12px",
+                textAlign: "left",
+                background: "#f8fafc",
+              }}
+            >
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: "11px",
+                  lineHeight: "1.4",
+                  opacity: 0.85,
+                }}
+              >
+                Engineered in India with{" "}
+                <span role="img" aria-label="love">
+                  ❤️
+                </span>{" "}
+                by MoveAhead
+              </p>
+              <p
+                style={{
+                  margin: "2px 0 0 0",
+                  fontSize: "11px",
+                  lineHeight: "1.4",
+                  opacity: 0.75,
+                }}
+              >
+                <strong>WCAGify.ai</strong> • An infrastructure platform by{" "}
+                <a
+                  href="https://moveahead.ai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="MoveAhead (opens in a new tab)"
+                  style={{ color: "inherit", textDecoration: "underline" }}
+                >
+                  MoveAhead
+                </a>
+              </p>
             </div>
           </div>
         </>

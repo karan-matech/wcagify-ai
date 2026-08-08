@@ -9,6 +9,7 @@ import {
   Linkedin,
   Twitter,
   ArrowUp,
+  Heart,
 } from "lucide-react";
 
 interface FooterProps {
@@ -101,7 +102,7 @@ export const Footer: React.FC<FooterProps> = ({
                     const el = document.querySelector("#pipeline");
                     if (el) el.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1"
+                  className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1 text-left"
                 >
                   4-Step Transformation Engine
                 </button>
@@ -114,7 +115,7 @@ export const Footer: React.FC<FooterProps> = ({
                     const el = document.querySelector("#comparison");
                     if (el) el.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1"
+                  className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1 text-left"
                 >
                   Native vs. Overlay Trap
                 </button>
@@ -127,7 +128,7 @@ export const Footer: React.FC<FooterProps> = ({
                     const el = document.querySelector("#assets");
                     if (el) el.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1"
+                  className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1 text-left"
                 >
                   Universal Asset Engine
                 </button>
@@ -140,7 +141,7 @@ export const Footer: React.FC<FooterProps> = ({
                     const el = document.querySelector("#architecture");
                     if (el) el.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1"
+                  className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1 text-left"
                 >
                   Tri-Pillar AI Architecture
                 </button>
@@ -153,7 +154,7 @@ export const Footer: React.FC<FooterProps> = ({
                     const el = document.querySelector("#gatekeeper");
                     if (el) el.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1"
+                  className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1 text-left"
                 >
                   Fail-Closed Build Gatekeeper
                 </button>
@@ -175,7 +176,7 @@ export const Footer: React.FC<FooterProps> = ({
                     const el = document.querySelector("#regulatory");
                     if (el) el.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1"
+                  className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1 text-left"
                 >
                   WCAG 2.2 Level AA Standard
                 </button>
@@ -188,7 +189,7 @@ export const Footer: React.FC<FooterProps> = ({
                     const el = document.querySelector("#regulatory");
                     if (el) el.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1"
+                  className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1 text-left"
                 >
                   European Accessibility Act (EN 301 549)
                 </button>
@@ -201,7 +202,7 @@ export const Footer: React.FC<FooterProps> = ({
                     const el = document.querySelector("#regulatory");
                     if (el) el.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1"
+                  className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1 text-left"
                 >
                   US ADA Title II & Section 508
                 </button>
@@ -214,7 +215,7 @@ export const Footer: React.FC<FooterProps> = ({
                     const el = document.querySelector("#assets");
                     if (el) el.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1"
+                  className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1 text-left"
                 >
                   ISO 14289-1 PDF/UA Specifications
                 </button>
@@ -227,7 +228,7 @@ export const Footer: React.FC<FooterProps> = ({
                     const el = document.querySelector("#assets");
                     if (el) el.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1"
+                  className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1 text-left"
                 >
                   EPUB 3.3 Publication Guidelines
                 </button>
@@ -258,7 +259,7 @@ export const Footer: React.FC<FooterProps> = ({
                     const el = document.querySelector("#demo-request");
                     if (el) el.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1"
+                  className="hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded inline-flex items-center min-h-[24px] py-1 text-left"
                 >
                   Request Platform Demo
                 </button>
@@ -282,16 +283,37 @@ export const Footer: React.FC<FooterProps> = ({
           </div>
         </div>
 
-        <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-          <div className="flex items-center gap-2 text-slate-400">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-800 text-emerald-400 border border-slate-700 font-semibold">
-              <ShieldCheck className="w-3.5 h-3.5" aria-hidden="true" />
-              WCAG 2.2 AA Compliant
-            </span>
-            <span>Natively Built — Zero Overlay Dependencies.</span>
+        <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 text-xs">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-slate-400">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-800 text-emerald-400 border border-slate-700 font-semibold">
+                <ShieldCheck className="w-3.5 h-3.5" aria-hidden="true" />
+                WCAG 2.2 AA Compliant
+              </span>
+              <span>Natively Built — Zero Overlay Dependencies.</span>
+            </div>
+
+            <div className="flex items-center gap-1 text-slate-400 text-[11px] pl-0.5">
+              <span>Engineered in India with</span>
+              <Heart
+                className="w-3 h-3 text-rose-500 fill-rose-500 inline shrink-0"
+                aria-hidden="true"
+              />
+              <span className="sr-only">love</span>
+              <span>by</span>
+              <a
+                href="https://moveahead.tech"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-slate-300 hover:text-indigo-400 underline decoration-slate-600 underline-offset-2 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none rounded px-0.5"
+                aria-label="MoveAhead (opens in new tab)"
+              >
+                MoveAhead
+              </a>
+            </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 self-end sm:self-center">
             <a
               href="https://linkedin.com"
               target="_blank"
