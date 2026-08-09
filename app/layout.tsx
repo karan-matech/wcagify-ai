@@ -101,7 +101,8 @@ export default function RootLayout({
         <script
           src="https://wcagify-widget.s3.ap-south-1.amazonaws.com/wcagify-1.0.0.min.js"
           defer={true}
-          data-wcagify-root=""
+          data-accent="#9F9C33"
+          data-icon="https://wcagify-widget.s3.ap-south-1.amazonaws.com/a11y-icon2.svg"
         />
       </head>
       <body
