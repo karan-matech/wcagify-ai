@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import { ShieldCheck, CheckCircle2, Mail, ArrowLeft } from "lucide-react";
 
