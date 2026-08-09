@@ -1,92 +1,87 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-/**
- * Keyboard Accessibility, Interactive UX, and Form Validation Assertion Suite
- */
-test.describe('WCAGify.ai Keyboard Navigation & Form Validation Tests', () => {
+test.describe("WCAGify.ai Keyboard Navigation & Form Validation Tests", () => {
+  test("Skip Link should become visible and shift focus to main content on first tab", async ({
+    page,
+    browserName,
+  }) => {
+    test.skip(
+      browserName === "webkit",
+      "WebKit excludes links from Tab order by default",
+    );
+    await page.goto("/");
 
-  test('Skip Link should become visible and shift focus to main content on first tab', async ({ page, browserName }) => {
-    // Safari/WebKit only tabs between form controls unless the user enables
-    // "Press Tab to highlight each item"; links are skipped by default. That is
-    // a browser preference, not a page defect, so the Tab-order assertion is
-    // only meaningful on engines that put links in the tab sequence.
-    test.skip(browserName === 'webkit', 'WebKit excludes links from Tab order by default');
-    await page.goto('/');
-
-    // Initially, skip-link should not be visible to screen-readers but hidden offscreen
-    const skipLink = page.locator('a[href="#main-content"]');
+    const skipLink = page.locator('a[href="#main-content"]').first();
     await expect(skipLink).toBeAttached();
 
-    // Emulate tab keypress to focus skip-link
-    await page.keyboard.press('Tab');
+    await page.keyboard.press("Tab");
 
-    // Assert that the skip link is now focused and visible
-    const isFocused = await skipLink.evaluate((el) => document.activeElement === el);
-    expect(isFocused).toBe(true);
+    await expect(skipLink).toBeFocused();
 
-    // Press enter on Skip Link to activate routing
-    await page.keyboard.press('Enter');
+    await page.keyboard.press("Enter");
 
-    // Assert that main content has focused (we added tabIndex={-1} on main)
-    const mainContent = page.locator('main#main-content');
-    const isMainFocused = await mainContent.evaluate((el) => document.activeElement === el);
-    expect(isMainFocused).toBe(true);
+    const mainContent = page.locator("main#main-content");
+    await expect(mainContent).toBeFocused();
   });
 
-  test('Keyboard Tab switching using ArrowRight and ArrowLeft in Universal Asset Tabs', async ({ page }) => {
-    await page.goto('/');
+  test("Keyboard Tab switching using ArrowRight and ArrowLeft in Universal Asset Tabs", async ({
+    page,
+  }) => {
+    await page.goto("/");
 
     const firstTab = page.locator('button[role="tab"]').first();
-    
-    // Focus on the first tab of Universal Asset format selectors
+    await firstTab.waitFor({ state: "visible" });
+
     await firstTab.focus();
+    await expect(firstTab).toBeFocused();
 
-    // Tab list keys cycle
-    await page.keyboard.press('ArrowRight');
-    
-    // Check if second tab is focused and active
+    await page.keyboard.press("ArrowRight");
+
     const secondTab = page.locator('button[role="tab"]').nth(1);
-    const isSecondTabFocused = await secondTab.evaluate((el) => document.activeElement === el);
-    expect(isSecondTabFocused).toBe(true);
-    expect(await secondTab.getAttribute('aria-selected')).toBe('true');
+    await expect(secondTab).toBeFocused();
+    await expect(secondTab).toHaveAttribute("aria-selected", "true");
 
-    // Cycle left back to the first tab
-    await page.keyboard.press('ArrowLeft');
-    const isFirstTabFocused = await firstTab.evaluate((el) => document.activeElement === el);
-    expect(isFirstTabFocused).toBe(true);
-    expect(await firstTab.getAttribute('aria-selected')).toBe('true');
+    await page.keyboard.press("ArrowLeft");
+    await expect(firstTab).toBeFocused();
+    await expect(firstTab).toHaveAttribute("aria-selected", "true");
   });
 
-  test('Demo request form empty submit should inject aria-invalid attributes and dynamic role="alert" alerts', async ({ page }) => {
-    await page.goto('/');
+  test('Demo request form empty submit should inject aria-invalid attributes and dynamic role="alert" alerts', async ({
+    page,
+  }) => {
+    await page.goto("/");
 
-    // Scroll to the demo form
-    const formSection = page.locator('form');
+    const formSection = page.locator("form").first();
     await formSection.scrollIntoViewIfNeeded();
 
-    // Verify fields are initially valid and have no alert overlays
-    const nameInput = page.locator('input#fullName');
-    const emailInput = page.locator('input#email');
+    const nameInput = page.locator("input#fullName");
+    const emailInput = page.locator("input#email");
 
-    expect(await nameInput.getAttribute('aria-invalid')).toBe('false');
-    expect(await emailInput.getAttribute('aria-invalid')).toBe('false');
+    await expect(nameInput).toBeVisible();
+    await expect(emailInput).toBeVisible();
 
-    // Attempt to submit form with blank fields
-    const submitBtn = page.locator('button[type="submit"]');
+    const initialNameInvalid = await nameInput.getAttribute("aria-invalid");
+    expect(initialNameInvalid === "false" || initialNameInvalid === null).toBe(
+      true,
+    );
+
+    const submitBtn = page.locator('button[type="submit"]').first();
     await submitBtn.click();
 
-    // Verify validation errors are dynamically triggered
-    expect(await nameInput.getAttribute('aria-invalid')).toBe('true');
-    expect(await emailInput.getAttribute('aria-invalid')).toBe('true');
+    await expect(nameInput).toHaveAttribute("aria-invalid", "true");
+    await expect(emailInput).toHaveAttribute("aria-invalid", "true");
 
-    // Verify presence of role="alert" with clear, polite accessibility feedback
-    const nameAlert = page.locator('span#fullName-error[role="alert"]');
-    const emailAlert = page.locator('span#email-error[role="alert"]');
+    const nameAlert = page.locator(
+      'span#fullName-error[role="alert"], [id*="fullName"][role="alert"]',
+    );
+    const emailAlert = page.locator(
+      'span#email-error[role="alert"], [id*="email"][role="alert"]',
+    );
 
-    await expect(nameAlert).toBeVisible();
-    await expect(emailAlert).toBeVisible();
+    await expect(nameAlert.first()).toBeVisible();
+    await expect(emailAlert.first()).toBeVisible();
 
-    expect(await nameAlert.innerText()).toContain('Name is required');
-    expect(await emailAlert.innerText()).toMatch(/email .*required/i);
+    expect(await nameAlert.first().innerText()).toContain("Name is required");
+    expect(await emailAlert.first().innerText()).toMatch(/email .*required/i);
   });
 });

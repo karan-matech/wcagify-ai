@@ -1,1 +1,58 @@
 @import "tailwindcss";
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply antialiased font-sans text-slate-900 bg-slate-50;
+  }
+
+  /* Focus-visible polyfill styles */
+  .focus-visible:focus {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+}
+
+/* Custom utility classes */
+.sr-only:not(:focus):not(:active) {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-in {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+.slide-in-from-top-2 {
+  animation: slideInFromTop 0.15s ease-out forwards;
+}

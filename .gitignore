@@ -5,10 +5,11 @@ node_modules/
 dist/
 build/
 .next/
+out/
 
 # Environment & Secrets
 .env*
-!.env.example
+.env*.local
 
 # Logs
 *.log
@@ -17,6 +18,9 @@ npm-debug.log*
 # Testing & Coverage
 coverage/
 test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
 
 # Lock files
 package-lock.json

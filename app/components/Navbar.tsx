@@ -1,3 +1,5 @@
+"use client";
+
 import React, {
   useState,
   useEffect,
@@ -6,6 +8,8 @@ import React, {
   useLayoutEffect,
 } from "react";
 import { Menu, X, ArrowRight, ShieldCheck } from "lucide-react";
+import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 
 interface NavbarProps {
   onNavigateToAccessibility?: () => void;
@@ -13,24 +17,72 @@ interface NavbarProps {
   onNavigateHome?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({
-  onNavigateToAccessibility,
-  currentView = "home",
-  onNavigateHome,
-}) => {
+export const Navbar: React.FC<NavbarProps> = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const isAccessibilityPage = pathname === "/accessibility";
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("");
 
-  /* Collapse to the hamburger when the links no longer FIT, or when on mobile/tablet viewports. */
   const [compact, setCompact] = useState(false);
   const navRef = useRef<HTMLElement | null>(null);
   const brandRef = useRef<HTMLAnchorElement | null>(null);
   const linksRef = useRef<HTMLDivElement | null>(null);
   const actionsRef = useRef<HTMLDivElement | null>(null);
 
-  // Ref for the mobile drawer & menu button to detect outside clicks
   const drawerRef = useRef<HTMLDivElement | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  const navLinks = [
+    { name: "Engine", href: "#pipeline" },
+    { name: "Native vs Overlay", href: "#comparison" },
+    { name: "Assets", href: "#assets" },
+    { name: "Gatekeeper", href: "#gatekeeper" },
+  ];
+
+  useEffect(() => {
+    if (isAccessibilityPage) {
+      setActiveSection("");
+      return;
+    }
+
+    const sectionIds = navLinks.map((link) => link.href.substring(1));
+    const observerOptions = {
+      root: null,
+      rootMargin: "-20% 0px -60% 0px",
+      threshold: 0,
+    };
+
+    const handleIntersect: IntersectionObserverCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(`#${entry.target.id}`);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(handleIntersect, observerOptions);
+
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    const handleScrollTop = () => {
+      if (window.scrollY < 200) {
+        setActiveSection("");
+      }
+    };
+
+    window.addEventListener("scroll", handleScrollTop);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", handleScrollTop);
+    };
+  }, [isAccessibilityPage]);
 
   const measure = useCallback(() => {
     const nav = navRef.current;
@@ -39,13 +91,12 @@ export const Navbar: React.FC<NavbarProps> = ({
     const actions = actionsRef.current;
     if (!nav || !brand || !links || !actions) return;
 
-    // Force compact on mobile/tablet screens (< 1024px)
     if (window.innerWidth < 1024) {
       setCompact(true);
       return;
     }
 
-    const GUTTER = 48; // horizontal padding + inter-group gaps
+    const GUTTER = 48;
     const available =
       nav.clientWidth - brand.offsetWidth - actions.offsetWidth - GUTTER;
     const needed = links.scrollWidth;
@@ -93,7 +144,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -102,7 +152,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     }
   }, [mobileMenuOpen]);
 
-  // Handle ESC key & Click Outside to close mobile drawer
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && mobileMenuOpen) {
@@ -136,24 +185,16 @@ export const Navbar: React.FC<NavbarProps> = ({
     };
   }, [mobileMenuOpen]);
 
-  const navLinks = [
-    { name: "Engine", href: "#pipeline" },
-    { name: "Native vs Overlay", href: "#comparison" },
-    { name: "Assets", href: "#assets" },
-    { name: "Gatekeeper", href: "#gatekeeper" },
-  ];
-
   const handleLinkClick = (href: string) => {
     setMobileMenuOpen(false);
-    if (currentView !== "home" && onNavigateHome) {
-      onNavigateHome();
-      setTimeout(() => {
-        const el = document.querySelector(href);
-        if (el) el.scrollIntoView({ behavior: "smooth" });
-      }, 100);
+
+    if (isAccessibilityPage) {
+      router.push(`/${href}`);
     } else {
       const el = document.querySelector(href);
-      if (el) el.scrollIntoView({ behavior: "smooth" });
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      }
     }
   };
 
@@ -170,14 +211,13 @@ export const Navbar: React.FC<NavbarProps> = ({
         aria-label="Primary Navigation"
         className="relative w-full px-4 sm:px-6 lg:px-10 h-16 flex items-center justify-between gap-4 flex-nowrap"
       >
-        {/* Brand Logo Link */}
-        <a
+        <Link
           ref={brandRef}
-          href="#"
-          onClick={(e) => {
-            e.preventDefault();
-            if (onNavigateHome) onNavigateHome();
-            window.scrollTo({ top: 0, behavior: "smooth" });
+          href="/"
+          onClick={() => {
+            if (!isAccessibilityPage) {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
           }}
           className="flex items-center gap-2 shrink-0 rounded-md p-1 focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 outline-none whitespace-nowrap group"
           aria-label="WCAGify.ai Home"
@@ -192,9 +232,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-200/60 ml-1">
             WCAG 2.2 AA
           </span>
-        </a>
+        </Link>
 
-        {/* Primary links */}
         <div
           ref={linksRef}
           aria-hidden={compact || undefined}
@@ -204,49 +243,49 @@ export const Navbar: React.FC<NavbarProps> = ({
               : "hidden lg:flex shrink min-w-0 mx-auto"
           }`}
         >
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              onClick={(e) => {
-                e.preventDefault();
-                handleLinkClick(link.href);
-              }}
-              className="px-2 xl:px-3 py-1.5 text-xs xl:text-sm font-medium text-slate-700 hover:text-indigo-600 hover:bg-slate-100 rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 outline-none shrink-0"
-            >
-              {link.name}
-            </a>
-          ))}
+          {navLinks.map((link) => {
+            const isActive =
+              !isAccessibilityPage && activeSection === link.href;
+            return (
+              <button
+                key={link.name}
+                type="button"
+                onClick={() => handleLinkClick(link.href)}
+                className={`px-2 xl:px-3 py-1.5 text-xs xl:text-sm font-medium rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 outline-none shrink-0 ${
+                  isActive
+                    ? "text-indigo-700 bg-indigo-50 font-semibold"
+                    : "text-slate-700 hover:text-indigo-600 hover:bg-slate-100"
+                }`}
+              >
+                {link.name}
+              </button>
+            );
+          })}
 
-          <button
-            type="button"
-            onClick={onNavigateToAccessibility}
+          <Link
+            href="/accessibility"
             className={`px-2 xl:px-3 py-1.5 text-xs xl:text-sm font-medium rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 outline-none flex items-center gap-1.5 shrink-0 ${
-              currentView === "accessibility"
+              isAccessibilityPage
                 ? "text-indigo-700 bg-indigo-50 font-semibold"
                 : "text-slate-700 hover:text-indigo-600 hover:bg-slate-100"
             }`}
-            aria-current={currentView === "accessibility" ? "page" : undefined}
+            aria-current={isAccessibilityPage ? "page" : undefined}
           >
             <ShieldCheck
               className="w-4 h-4 text-indigo-600 shrink-0"
               aria-hidden="true"
             />
             <span>a11y Statement</span>
-          </button>
+          </Link>
         </div>
 
-        {/* Action Button & Mobile Menu Toggle */}
         <div
           ref={actionsRef}
           className="flex items-center gap-3 shrink-0 whitespace-nowrap ml-auto"
         >
-          <a
-            href="#demo-request"
-            onClick={(e) => {
-              e.preventDefault();
-              handleLinkClick("#demo-request");
-            }}
+          <button
+            type="button"
+            onClick={() => handleLinkClick("#demo-request")}
             className="hidden sm:inline-flex items-center justify-center px-4 py-2 text-xs sm:text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 rounded-lg shadow-sm transition-all focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 outline-none group shrink-0"
           >
             <span>Request Demo</span>
@@ -254,9 +293,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="ml-1.5 w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform"
               aria-hidden="true"
             />
-          </a>
+          </button>
 
-          {/* Mobile menu button */}
           <button
             ref={menuButtonRef}
             type="button"
@@ -281,10 +319,8 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </nav>
 
-      {/* Mobile Drawer Navigation & Backdrop */}
       {mobileMenuOpen && (
         <>
-          {/* Transparent Backdrop overlay to capture outside clicks */}
           <div
             className="fixed inset-0 top-16 bg-slate-900/20 backdrop-blur-xs z-40"
             aria-hidden="true"
@@ -303,33 +339,39 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
                   Navigation
                 </span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-700 border border-emerald-200">
                   WCAG 2.2 AA Compliant
                 </span>
               </div>
 
               <nav aria-label="Mobile Navigation Links" className="space-y-1">
-                {navLinks.map((link) => (
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleLinkClick(link.href);
-                    }}
-                    className="block px-3 py-2.5 text-base font-medium text-slate-800 hover:text-indigo-600 hover:bg-slate-50 rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-indigo-600 outline-none"
-                  >
-                    {link.name}
-                  </a>
-                ))}
+                {navLinks.map((link) => {
+                  const isActive =
+                    !isAccessibilityPage && activeSection === link.href;
+                  return (
+                    <button
+                      key={link.name}
+                      type="button"
+                      onClick={() => handleLinkClick(link.href)}
+                      className={`block w-full text-left px-3 py-2.5 text-base font-medium rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-indigo-600 outline-none ${
+                        isActive
+                          ? "text-indigo-700 bg-indigo-50 font-semibold"
+                          : "text-slate-800 hover:text-indigo-600 hover:bg-slate-50"
+                      }`}
+                    >
+                      {link.name}
+                    </button>
+                  );
+                })}
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    if (onNavigateToAccessibility) onNavigateToAccessibility();
-                  }}
-                  className="w-full text-left px-3 py-2.5 text-base font-medium text-slate-800 hover:text-indigo-600 hover:bg-slate-50 rounded-lg transition-colors flex items-center justify-between focus-visible:ring-2 focus-visible:ring-indigo-600 outline-none"
+                <Link
+                  href="/accessibility"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`w-full text-left px-3 py-2.5 text-base font-medium rounded-lg transition-colors flex items-center justify-between focus-visible:ring-2 focus-visible:ring-indigo-600 outline-none ${
+                    isAccessibilityPage
+                      ? "text-indigo-700 bg-indigo-50 font-semibold"
+                      : "text-slate-800 hover:text-indigo-600 hover:bg-slate-50"
+                  }`}
                 >
                   <span className="flex items-center gap-2">
                     <ShieldCheck
@@ -341,21 +383,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <span className="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">
                     Verified
                   </span>
-                </button>
+                </Link>
               </nav>
 
               <div className="pt-4 border-t border-slate-100 space-y-3">
-                <a
-                  href="#demo-request"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleLinkClick("#demo-request");
-                  }}
+                <button
+                  type="button"
+                  onClick={() => handleLinkClick("#demo-request")}
                   className="flex items-center justify-center w-full px-4 py-3 text-base font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow transition-colors"
                 >
                   Request Platform Demo
                   <ArrowRight className="ml-2 w-5 h-5" aria-hidden="true" />
-                </a>
+                </button>
               </div>
             </div>
           </div>
