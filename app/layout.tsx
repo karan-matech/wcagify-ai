@@ -2,7 +2,7 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import type { Metadata, Viewport } from "next";
-// import WcagifyWidget from "./components/accessibility-widget/WcagifyWidget";
+import Script from "next/script";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 
@@ -94,15 +94,13 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
-        <script
+        <Script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <script
+        <Script
           src="https://wcagify-widget.s3.ap-south-1.amazonaws.com/wcagify-1.0.0.min.js"
-          defer={true}
-          data-accent="#9F9C33"
-          data-icon="https://wcagify-widget.s3.ap-south-1.amazonaws.com/a11y-icon2.svg"
+          strategy="afterInteractive"
         />
       </head>
       <body
@@ -111,7 +109,6 @@ export default function RootLayout({
         <Navbar />
         {children}
         <Footer />
-        {/* <WcagifyWidget /> */}
       </body>
     </html>
   );
