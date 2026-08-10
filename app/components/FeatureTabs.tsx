@@ -19,10 +19,13 @@ import {
   Check,
 } from "lucide-react";
 
+type AssetStatus = "live" | "beta" | "pipeline";
+
 interface AssetCategory {
   id: string;
   name: string;
   badge: string;
+  status: AssetStatus;
   icon: React.ReactNode;
   headline: string;
   simpleDescription: string;
@@ -51,6 +54,7 @@ export const FeatureTabs: React.FC = () => {
       id: "web-saas",
       name: "Websites & Apps",
       badge: "HTML5 + ARIA",
+      status: "beta",
       icon: <Layout className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />,
       headline: "Fix Web Forms, Buttons & Dashboards Natively",
       simpleDescription:
@@ -83,6 +87,7 @@ export const FeatureTabs: React.FC = () => {
       id: "documents",
       name: "PDFs & Documents",
       badge: "PDF/UA ISO 14289",
+      status: "beta",
       icon: <FileText className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />,
       headline: "Transform Untagged Scanned PDFs into Tagged Documents",
       simpleDescription:
@@ -116,6 +121,7 @@ export const FeatureTabs: React.FC = () => {
       id: "publishing",
       name: "E-Books & Publishing",
       badge: "EPUB 3 & MathML",
+      status: "beta",
       icon: <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />,
       headline: "Accessible Educational Textbooks & Academic Journals",
       simpleDescription:
@@ -148,6 +154,7 @@ export const FeatureTabs: React.FC = () => {
       id: "knowledge",
       name: "Portals & Knowledge Bases",
       badge: "Wikis & Portals",
+      status: "pipeline",
       icon: <Database className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />,
       headline: "Equal Access for Internal Employee Knowledge Systems",
       simpleDescription:
@@ -241,13 +248,55 @@ export const FeatureTabs: React.FC = () => {
     tabRefs.current[newIndex]?.focus();
   };
 
+  const getStatusBadge = (status: AssetStatus, isSelected: boolean) => {
+    switch (status) {
+      case "live":
+        return (
+          <span
+            className={`text-[9px] sm:text-[10px] uppercase font-extrabold px-1.5 py-0.5 rounded ml-1 tracking-wider ${
+              isSelected
+                ? "bg-emerald-500 text-white"
+                : "bg-emerald-100 text-emerald-800"
+            }`}
+          >
+            Live
+          </span>
+        );
+      case "beta":
+        return (
+          <span
+            className={`text-[9px] sm:text-[10px] uppercase font-extrabold px-1.5 py-0.5 rounded ml-1 tracking-wider ${
+              isSelected
+                ? "bg-amber-500 text-white"
+                : "bg-amber-100 text-amber-800"
+            }`}
+          >
+            Beta
+          </span>
+        );
+      case "pipeline":
+        return (
+          <span
+            className={`text-[9px] sm:text-[10px] uppercase font-extrabold px-1.5 py-0.5 rounded ml-1 tracking-wider whitespace-nowrap ${
+              isSelected
+                ? "bg-blue-500 text-white"
+                : "bg-blue-100 text-blue-800"
+            }`}
+          >
+            Pipeline
+          </span>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <section
       id="assets"
       className="py-12 sm:py-20 lg:py-24 bg-slate-50 border-b border-slate-200"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        {/* Friendly Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-10 sm:mb-14">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-indigo-100 text-indigo-800 border border-indigo-200">
             <Sparkles
@@ -267,11 +316,10 @@ export const FeatureTabs: React.FC = () => {
           </p>
         </div>
 
-        {/* Format Selector Tabs */}
         <div
           role="tablist"
           aria-label="Universal Asset Format Selector"
-          className="flex flex-wrap items-center justify-center gap-2 p-2 bg-white rounded-2xl border border-slate-200 shadow-sm max-w-4xl mx-auto mb-8"
+          className="flex flex-wrap items-center justify-center gap-2 p-2 bg-white rounded-2xl border border-slate-200 shadow-sm max-w-5xl mx-auto mb-8"
         >
           {categories.map((cat, idx) => {
             const isSelected = cat.id === activeTabId;
@@ -292,16 +340,27 @@ export const FeatureTabs: React.FC = () => {
                   setActiveTabId(cat.id);
                   setIsTransformed(true);
                 }}
-                className={`flex items-center gap-2 px-3.5 sm:px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all focus-visible:ring-2 focus-visible:ring-indigo-600 outline-none ${
+                className={`flex items-center gap-2 px-3.5 sm:px-5 py-3 rounded-xl font-bold text-xs sm:text-sm transition-all focus-visible:ring-2 focus-visible:ring-indigo-600 outline-none relative ${
                   isSelected
                     ? "bg-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]"
                     : "text-slate-700 hover:text-slate-900 hover:bg-slate-100"
                 }`}
               >
                 <span className="shrink-0">{cat.icon}</span>
-                <span>{cat.name}</span>
+
+                <span className="inline-flex items-start text-left relative pr-1">
+                  <span>
+                    {cat.name}
+                    <span className="sr-only"> - Status: {cat.status}</span>
+                  </span>
+
+                  <span className="relative -top-2.5 scale-90 sm:scale-100 origin-bottom-left">
+                    {getStatusBadge(cat.status, isSelected)}
+                  </span>
+                </span>
+
                 <span
-                  className={`hidden md:inline-block text-[10px] px-2 py-0.5 rounded-full ${
+                  className={`hidden lg:inline-block text-[10px] px-2 py-0.5 rounded-full ${
                     isSelected
                       ? "bg-indigo-500/30 text-white"
                       : "bg-slate-200 text-slate-600"
@@ -314,14 +373,12 @@ export const FeatureTabs: React.FC = () => {
           })}
         </div>
 
-        {/* Interactive Visual Transformation Display */}
         <div
           id={`panel-${activeCategory.id}`}
           role="tabpanel"
           aria-labelledby={`tab-${activeCategory.id}`}
           className="bg-slate-900 rounded-3xl p-4 sm:p-8 lg:p-10 shadow-2xl border border-slate-800 text-white max-w-5xl mx-auto relative overflow-hidden"
         >
-          {/* Top Bar Controls */}
           <div className="flex flex-wrap items-center justify-between gap-4 pb-6 mb-6 border-b border-slate-800">
             <div className="flex items-center gap-3">
               <span className="text-xs sm:text-sm font-bold text-indigo-400 flex items-center gap-1.5">
@@ -375,7 +432,6 @@ export const FeatureTabs: React.FC = () => {
             </div>
           </div>
 
-          {/* AI Scanning Beam Overlay Effect */}
           <AnimatePresence>
             {isScanning && (
               <motion.div
@@ -387,11 +443,8 @@ export const FeatureTabs: React.FC = () => {
             )}
           </AnimatePresence>
 
-          {/* Main Visual Display Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {/* Visual Card Representation */}
             <div className="lg:col-span-7 bg-slate-950 p-5 sm:p-8 rounded-2xl border border-slate-800 space-y-6 relative overflow-hidden">
-              {/* Header Status */}
               <div className="flex items-center justify-between pb-3 border-b border-slate-800 text-xs">
                 <span className="font-semibold text-slate-400 flex items-center gap-1.5">
                   <Layers
@@ -415,7 +468,6 @@ export const FeatureTabs: React.FC = () => {
                 </span>
               </div>
 
-              {/* Before/After Visual Display */}
               <div className="space-y-4">
                 <div className="space-y-2">
                   <h3 className="text-base font-bold text-white flex items-center gap-2">
@@ -438,7 +490,6 @@ export const FeatureTabs: React.FC = () => {
                   </p>
                 </div>
 
-                {/* Features Checklist */}
                 <div className="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-2.5">
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block">
                     {isTransformed
@@ -473,7 +524,6 @@ export const FeatureTabs: React.FC = () => {
               </div>
             </div>
 
-            {/* Right Explanation & Audio Preview Box */}
             <div className="lg:col-span-5 space-y-6">
               <div className="p-6 bg-slate-950 rounded-2xl border border-slate-800 space-y-4">
                 <div className="flex items-center gap-2 text-indigo-400">
@@ -487,7 +537,6 @@ export const FeatureTabs: React.FC = () => {
                   {activeCategory.simpleDescription}
                 </p>
 
-                {/* Speech Synthesis Narration Button */}
                 <div className="pt-2">
                   <button
                     type="button"
@@ -504,7 +553,6 @@ export const FeatureTabs: React.FC = () => {
                 </div>
               </div>
 
-              {/* Regulatory Compliance Badge */}
               <div className="p-4 bg-slate-950 rounded-2xl border border-slate-800 flex items-center gap-3">
                 <ShieldCheck
                   className="w-6 h-6 text-emerald-400 shrink-0"
@@ -522,7 +570,6 @@ export const FeatureTabs: React.FC = () => {
             </div>
           </div>
 
-          {/* Optional Code View Drawer */}
           {showTechCode && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
