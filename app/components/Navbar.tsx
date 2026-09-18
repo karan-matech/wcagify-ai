@@ -219,16 +219,13 @@ export const Navbar: React.FC<NavbarProps> = () => {
               window.scrollTo({ top: 0, behavior: "smooth" });
             }
           }}
-          className="flex items-center gap-2 shrink-0 rounded-md p-1 focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 outline-none whitespace-nowrap group"
+          className="brand shrink-0 rounded-md p-1 focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 outline-none whitespace-nowrap group"
           aria-label="WCAGify.ai Home"
         >
-          <img
-            src="/logo.svg"
-            alt="WCAGify.ai logo"
-            className="h-7 sm:h-8 w-auto object-contain"
-            width={160}
-            height={32}
-          />
+          <span className="brand-mark">
+            <img src="/assets/brand/wcagify.svg" alt="" width={35} height={35} />
+          </span>
+          <span className="brand-wordmark">WCAGIFY.AI</span>
           <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-200/60 ml-1">
             WCAG 2.2 AA
           </span>

@@ -37,16 +37,15 @@ export const Footer: React.FC<FooterProps> = ({
                 if (onNavigateHome) onNavigateHome();
                 scrollToTop();
               }}
-              className="inline-block focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 outline-none rounded-md"
+              className="brand focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 outline-none rounded-md"
               aria-label="WCAGify.ai Home"
             >
-              <img
-                src="/logo.svg"
-                alt="WCAGify.ai logo"
-                className="h-10 w-auto filter invert brightness-200"
-                width={200}
-                height={40}
-              />
+              <span className="brand-mark">
+                <img src="/assets/brand/wcagify.svg" alt="" width={35} height={35} />
+              </span>
+              <span className="brand-wordmark brand-wordmark--inverse">
+                WCAGIFY.AI
+              </span>
             </button>
 
             <p className="text-xs text-slate-300 leading-relaxed max-w-sm">
