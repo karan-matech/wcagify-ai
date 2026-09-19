@@ -1,12 +1,82 @@
 @import "tailwindcss";
 
+/*
+ * Design tokens calibrated from the WCAGify.ai platform
+ * (/home/karan/Documents/ma-tech/wcagify.ai/platform/frontend, src/app/studio.css .radix-themes).
+ * Single brand color throughout: #101831.
+ */
+@theme {
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --color-indigo-50: #f6f7f8;
+  --color-indigo-100: #eceef3;
+  --color-indigo-200: #d1d6e6;
+  --color-indigo-300: #a4b0d6;
+  --color-indigo-400: #5972c0;
+  --color-indigo-500: #2e4384;
+  --color-indigo-600: #101831;
+  --color-indigo-700: #0d1429;
+  --color-indigo-800: #0a1022;
+  --color-indigo-900: #070c1a;
+  --color-indigo-950: #040710;
+}
+
+:root {
+  --studio-ink: #101831;
+  --studio-muted: #65708e;
+  --studio-line: #e4e9f2;
+}
+
+/* Brand lockup — matches .brand/.brand-mark/.brand-wordmark in the platform's studio.css */
+.brand {
+  display: inline-flex;
+  gap: 11px;
+  align-items: center;
+  text-decoration: none;
+  color: var(--studio-ink);
+  flex: none;
+}
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  flex: none;
+  color: #fff;
+  background: linear-gradient(150deg, #374152, #161d30);
+  border-radius: 50%;
+  box-shadow: 0 3px 8px #24314a15;
+  overflow: hidden;
+}
+.brand-mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.brand-wordmark {
+  font-size: 16px;
+  line-height: 1.15;
+  font-weight: 650;
+  letter-spacing: 1.2px;
+}
+.brand-wordmark--inverse {
+  color: #fff;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
   }
 
   body {
-    @apply antialiased font-sans text-slate-900 bg-slate-50;
+    @apply antialiased font-sans bg-slate-50;
+    color: var(--studio-ink);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
   }
 
   /* Focus-visible polyfill styles */

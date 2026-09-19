@@ -6,6 +6,7 @@ dist/
 build/
 .next/
 out/
+*.tsbuildinfo
 
 # Environment & Secrets
 .env*
@@ -22,5 +23,23 @@ playwright-report/
 blob-report/
 playwright/.cache/
 
-# Lock files
-package-lock.json
+# Claude Code / agent tooling (local, machine-specific)
+.claude/
+AGENTS.md
+CLAUDE.md
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local cache/tmp
+.cache/
+.tmp/
+tmp/

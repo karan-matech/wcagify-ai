@@ -1,4 +1,5 @@
 import { HeroSection } from "./components/HeroSection";
+import { StatsBand } from "./components/StatsBand";
 import { HeroTransformationPreview } from "./components/HeroTransformationPreview";
 import { FeatureTabs } from "./components/FeatureTabs";
 import { ArchitectureTriPillar } from "./components/ArchitectureTriPillar";
@@ -13,6 +14,7 @@ export default function HomePage() {
       <SkipLink />
       <main id="main-content" tabIndex={-1} className="outline-none">
         <HeroSection />
+        <StatsBand />
         <HeroTransformationPreview />
         <OverlayVsNative />
         <FeatureTabs />

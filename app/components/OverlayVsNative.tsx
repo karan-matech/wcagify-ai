@@ -1,10 +1,6 @@
 import React from "react";
-import {
-  XCircle,
-  AlertTriangle,
-  CheckCircle2,
-  ShieldAlert,
-} from "lucide-react";
+import { XCircle, CheckCircle2, ShieldAlert } from "lucide-react";
+import { Reveal } from "./Reveal";
 
 export const OverlayVsNative: React.FC = () => {
   const comparisonData = [
@@ -54,100 +50,68 @@ export const OverlayVsNative: React.FC = () => {
       id="comparison"
       className="py-16 lg:py-24 bg-slate-50 border-b border-slate-200"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-rose-100 text-rose-800 border border-rose-200">
-            <AlertTriangle
-              className="w-3.5 h-3.5 text-rose-600"
-              aria-hidden="true"
-            />
+        <Reveal className="text-center max-w-3xl mx-auto space-y-4">
+          <p className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-indigo-600">
             The Architectural Shift
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            Native Source Remediation vs. The "Overlay Trap"
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
+            Native source remediation vs. the "overlay trap"
           </h2>
-          <p className="text-base sm:text-lg text-slate-700 font-medium">
+          <p className="text-base sm:text-lg text-slate-600">
             Accessibility cannot be achieved with floating JavaScript toolbars
             or superficial overlays. True accessibility lives natively inside
             the source code, DOM structure, and tag tree of the digital asset
             itself.
           </p>
-        </div>
+        </Reveal>
 
         {/* Global Regulatory Enforcement Banner */}
-        <div
+        <Reveal
           id="regulatory"
-          className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-xl border border-indigo-900/50 relative overflow-hidden"
+          className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200"
         >
-          <div
-            className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none"
-            aria-hidden="true"
-          >
-            <ShieldAlert className="w-64 h-64 text-indigo-400" />
+          <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+            <ShieldAlert
+              className="w-5 h-5 text-indigo-600 shrink-0"
+              aria-hidden="true"
+            />
+            <h3 className="text-lg font-bold text-slate-900">
+              Global Legal Mandates & Compliance Drivers
+            </h3>
           </div>
 
-          <div className="relative z-10 space-y-6">
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-indigo-800/60 pb-4">
-              <div className="flex items-center gap-3">
-                <ShieldAlert
-                  className="w-6 h-6 text-indigo-400 shrink-0"
-                  aria-hidden="true"
-                />
-                <h3 className="text-lg font-bold text-white">
-                  Global Legal Mandates & Compliance Drivers
-                </h3>
-              </div>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-900/80 text-indigo-200">
-                Strict Legal Liability
-              </span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
+            <div className="space-y-2">
+              <h4 className="font-semibold text-slate-900 text-sm">
+                European Accessibility Act (EAA EN 301 549)
+              </h4>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                Mandates strict WCAG 2.2 AA accessibility across all
+                e-commerce, banking, ebooks, and public digital services
+                operating in the EU. Fines and operational bans apply to
+                non-compliant digital assets.
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* EAA Driver */}
-              <div className="p-4 rounded-xl bg-slate-900/80 border border-indigo-800/40 space-y-2">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-indigo-300 text-sm">
-                    European Accessibility Act (EAA EN 301 549)
-                  </h4>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-900/80 text-indigo-200">
-                    Enforced EU-Wide
-                  </span>
-                </div>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  Mandates strict WCAG 2.2 AA accessibility across all
-                  e-commerce, banking, ebooks, and public digital services
-                  operating in the EU. Fines and operational bans apply to
-                  non-compliant digital assets.
-                </p>
-              </div>
-
-              {/* US ADA Title II & Sec 508 */}
-              <div className="p-4 rounded-xl bg-slate-900/80 border border-indigo-800/40 space-y-2">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-indigo-300 text-sm">
-                    US ADA Title II & Section 508
-                  </h4>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-900/80 text-indigo-200">
-                    DOJ Rule Active
-                  </span>
-                </div>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  The US Department of Justice enforces WCAG 2.2 AA compliance
-                  for public entities, healthcare, and higher education across
-                  both web platforms and enterprise PDF documents.
-                </p>
-              </div>
+            <div className="space-y-2">
+              <h4 className="font-semibold text-slate-900 text-sm">
+                US ADA Title II & Section 508
+              </h4>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                The US Department of Justice enforces WCAG 2.2 AA compliance
+                for public entities, healthcare, and higher education across
+                both web platforms and enterprise PDF documents.
+              </p>
             </div>
           </div>
-        </div>
+        </Reveal>
 
         {/* Technical Principles Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-lg">
-              1
-            </div>
+        <Reveal className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="space-y-2">
+            <span className="text-sm font-semibold text-indigo-600">01</span>
             <h3 className="text-lg font-bold text-slate-900">
               Accessibility Belongs Inside the Asset
             </h3>
@@ -158,10 +122,8 @@ export const OverlayVsNative: React.FC = () => {
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-lg">
-              2
-            </div>
+          <div className="space-y-2">
+            <span className="text-sm font-semibold text-indigo-600">02</span>
             <h3 className="text-lg font-bold text-slate-900">
               Native Source Remediation
             </h3>
@@ -172,10 +134,8 @@ export const OverlayVsNative: React.FC = () => {
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-lg">
-              3
-            </div>
+          <div className="space-y-2">
+            <span className="text-sm font-semibold text-indigo-600">03</span>
             <h3 className="text-lg font-bold text-slate-900">
               Fail-Closed Build Gatekeeper
             </h3>
@@ -185,27 +145,18 @@ export const OverlayVsNative: React.FC = () => {
               feedback before hitting production.
             </p>
           </div>
-        </div>
+        </Reveal>
 
         {/* Detailed Comparison Matrix Table */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-md overflow-hidden">
-          <div className="p-6 bg-slate-900 text-white border-b border-slate-800 flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-bold">
-                Methodology Comparison Matrix
-              </h3>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Evaluating accessibility remediation strategies against
-                enterprise requirements
-              </p>
-            </div>
-            <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-semibold">
-              <CheckCircle2
-                className="w-4 h-4 text-emerald-400"
-                aria-hidden="true"
-              />
-              WCAGify Native AI Engine
-            </span>
+        <Reveal className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+          <div className="p-6 border-b border-slate-200">
+            <h3 className="text-lg font-bold text-slate-900">
+              Methodology Comparison Matrix
+            </h3>
+            <p className="text-sm text-slate-500 mt-0.5">
+              Evaluating accessibility remediation strategies against
+              enterprise requirements
+            </p>
           </div>
 
           {/* Focusable so keyboard users can scroll the table horizontally */}
@@ -219,59 +170,47 @@ export const OverlayVsNative: React.FC = () => {
               className="w-full text-left text-sm"
               aria-label="Remediation Approach Comparison"
             >
-              <thead className="bg-slate-100 text-slate-700 text-xs font-bold uppercase tracking-wider border-b border-slate-200">
+              <thead className="text-slate-500 text-xs font-semibold uppercase tracking-wider border-b border-slate-200">
                 <tr>
                   <th scope="col" className="p-4 w-1/4">
                     Evaluation Criterion
                   </th>
-                  <th
-                    scope="col"
-                    className="p-4 w-1/4 text-rose-700 bg-rose-50/50"
-                  >
-                    <span className="flex items-center gap-1">
+                  <th scope="col" className="p-4 w-1/4">
+                    <span className="flex items-center gap-1.5">
                       <XCircle
-                        className="w-4 h-4 text-rose-600"
+                        className="w-4 h-4 text-slate-400"
                         aria-hidden="true"
                       />
                       Superficial Overlays
                     </span>
                   </th>
-                  <th
-                    scope="col"
-                    className="p-4 w-1/4 text-amber-800 bg-amber-50/50"
-                  >
+                  <th scope="col" className="p-4 w-1/4">
                     Manual Services
                   </th>
                   <th
                     scope="col"
-                    className="p-4 w-1/4 text-indigo-900 bg-indigo-50 font-extrabold"
+                    className="p-4 w-1/4 bg-indigo-50/60 text-indigo-700"
                   >
-                    <span className="flex items-center gap-1 text-indigo-600">
+                    <span className="flex items-center gap-1.5">
                       <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
                       WCAGify Native AI
                     </span>
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200 text-slate-700">
+              <tbody className="divide-y divide-slate-200 text-slate-600">
                 {comparisonData.map((row, index) => (
-                  <tr
-                    key={index}
-                    className="hover:bg-slate-50/80 transition-colors"
-                  >
-                    <th
-                      scope="row"
-                      className="p-4 font-bold text-slate-900 bg-slate-50/50"
-                    >
+                  <tr key={index} className="hover:bg-slate-50 transition-colors">
+                    <th scope="row" className="p-4 font-semibold text-slate-900">
                       {row.criterion}
                     </th>
-                    <td className="p-4 text-rose-900 bg-rose-50/20 text-xs leading-relaxed">
+                    <td className="p-4 text-xs leading-relaxed">
                       {row.overlay}
                     </td>
-                    <td className="p-4 text-slate-700 bg-amber-50/10 text-xs leading-relaxed">
+                    <td className="p-4 text-xs leading-relaxed">
                       {row.manual}
                     </td>
-                    <td className="p-4 font-semibold text-indigo-950 bg-indigo-50/60 text-xs leading-relaxed border-l-2 border-indigo-600">
+                    <td className="p-4 font-medium text-slate-900 bg-indigo-50/40 text-xs leading-relaxed border-l-2 border-indigo-600">
                       {row.wcagify}
                     </td>
                   </tr>
@@ -279,7 +218,7 @@ export const OverlayVsNative: React.FC = () => {
               </tbody>
             </table>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

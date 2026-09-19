@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import { Send, CheckCircle2, AlertCircle, Sparkles } from "lucide-react";
+import { Send, CheckCircle2, AlertCircle } from "lucide-react";
+import { Reveal } from "./Reveal";
 
 export const DemoRequestForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -62,17 +63,13 @@ export const DemoRequestForm: React.FC = () => {
           {liveAnnouncement}
         </div>
 
-        <div className="max-w-3xl mx-auto bg-slate-50 p-8 sm:p-10 rounded-2xl border border-slate-200 shadow-lg space-y-8">
+        <Reveal className="max-w-3xl mx-auto bg-slate-50 p-8 sm:p-10 rounded-2xl border border-slate-200 shadow-lg space-y-8">
           {/* Form Header */}
           <div className="text-center space-y-3">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-indigo-100 text-indigo-800 border border-indigo-200">
-              <Sparkles
-                className="w-3.5 h-3.5 text-indigo-600"
-                aria-hidden="true"
-              />
+            <p className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-indigo-600">
               Schedule Platform Demonstration
-            </span>
-            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+            </p>
+            <h2 className="text-3xl font-bold text-slate-900 tracking-tight">
               Transform Your Digital Assets at Scale
             </h2>
             <p className="text-sm text-slate-600 max-w-xl mx-auto">
@@ -350,7 +347,7 @@ export const DemoRequestForm: React.FC = () => {
               </div>
             </form>
           )}
-        </div>
+        </Reveal>
       </div>
     </section>
   );

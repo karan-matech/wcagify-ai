@@ -37,16 +37,15 @@ export const Footer: React.FC<FooterProps> = ({
                 if (onNavigateHome) onNavigateHome();
                 scrollToTop();
               }}
-              className="inline-block focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 outline-none rounded-md"
+              className="brand focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 outline-none rounded-md"
               aria-label="WCAGify.ai Home"
             >
-              <img
-                src="/logo.svg"
-                alt="WCAGify.ai logo"
-                className="h-10 w-auto filter invert brightness-200"
-                width={200}
-                height={40}
-              />
+              <span className="brand-mark">
+                <img src="/assets/brand/wcagify.svg" alt="" width={35} height={35} />
+              </span>
+              <span className="brand-wordmark brand-wordmark--inverse">
+                WCAGIFY.AI
+              </span>
             </button>
 
             <p className="text-xs text-slate-300 leading-relaxed max-w-sm">
@@ -286,11 +285,14 @@ export const Footer: React.FC<FooterProps> = ({
         <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 text-xs">
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-slate-400">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-800 text-emerald-400 border border-slate-700 font-semibold">
-                <ShieldCheck className="w-3.5 h-3.5" aria-hidden="true" />
-                WCAG 2.2 AA Compliant
+              <ShieldCheck
+                className="w-3.5 h-3.5 text-emerald-400 shrink-0"
+                aria-hidden="true"
+              />
+              <span>
+                WCAG 2.2 AA Compliant · Natively Built — Zero Overlay
+                Dependencies.
               </span>
-              <span>Natively Built — Zero Overlay Dependencies.</span>
             </div>
 
             <div className="flex items-center gap-1 text-slate-400 text-[11px] pl-0.5">

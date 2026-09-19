@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Cpu, UserCheck, Sparkles, Check, ArrowRight } from "lucide-react";
+import { Reveal } from "./Reveal";
 
 export const ArchitectureTriPillar: React.FC = () => {
   const [selectedPillar, setSelectedPillar] = useState<number>(1);
@@ -71,22 +72,21 @@ export const ArchitectureTriPillar: React.FC = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">
-            <Cpu className="w-3.5 h-3.5 text-indigo-400" aria-hidden="true" />
+        <Reveal className="text-center max-w-3xl mx-auto space-y-4">
+          <p className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-indigo-400">
             Core Technology Architecture
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
             The Tri-Pillar Architecture
           </h2>
           <p className="text-base sm:text-lg text-slate-300">
             Blending AI Reasoning, Deterministic Software Precision, and Human
             Judgment to guarantee 100% compliance at scale.
           </p>
-        </div>
+        </Reveal>
 
         {/* 3 Pillar Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Reveal className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {pillars.map((pillar) => {
             const isSelected = pillar.id === selectedPillar;
             return (
@@ -128,10 +128,10 @@ export const ArchitectureTriPillar: React.FC = () => {
               </button>
             );
           })}
-        </div>
+        </Reveal>
 
         {/* Deep Dive Detail Card */}
-        <div className="bg-slate-950 p-6 sm:p-8 rounded-2xl border border-slate-800 space-y-6">
+        <Reveal className="bg-slate-950 p-6 sm:p-8 rounded-2xl border border-slate-800 space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
             <div>
               <span className="text-xs font-bold uppercase text-indigo-400">
@@ -141,7 +141,7 @@ export const ArchitectureTriPillar: React.FC = () => {
                 {activePillarData.title} ({activePillarData.sub})
               </h3>
             </div>
-            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+            <span className="text-xs font-semibold text-slate-400">
               Active System Module
             </span>
           </div>
@@ -185,7 +185,7 @@ export const ArchitectureTriPillar: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
