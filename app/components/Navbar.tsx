@@ -226,9 +226,6 @@ export const Navbar: React.FC<NavbarProps> = () => {
             <img src="/assets/brand/wcagify.svg" alt="" width={35} height={35} />
           </span>
           <span className="brand-wordmark">WCAGIFY.AI</span>
-          <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-200/60 ml-1">
-            WCAG 2.2 AA
-          </span>
         </Link>
 
         <div
@@ -332,12 +329,9 @@ export const Navbar: React.FC<NavbarProps> = () => {
             aria-label="Mobile Navigation Menu"
           >
             <div className="p-6 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center pb-3 border-b border-slate-100">
                 <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
                   Navigation
-                </span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-700 border border-emerald-200">
-                  WCAG 2.2 AA Compliant
                 </span>
               </div>
 
@@ -364,22 +358,17 @@ export const Navbar: React.FC<NavbarProps> = () => {
                 <Link
                   href="/accessibility"
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`w-full text-left px-3 py-2.5 text-base font-medium rounded-lg transition-colors flex items-center justify-between focus-visible:ring-2 focus-visible:ring-indigo-600 outline-none ${
+                  className={`w-full text-left px-3 py-2.5 text-base font-medium rounded-lg transition-colors flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-indigo-600 outline-none ${
                     isAccessibilityPage
                       ? "text-indigo-700 bg-indigo-50 font-semibold"
                       : "text-slate-800 hover:text-indigo-600 hover:bg-slate-50"
                   }`}
                 >
-                  <span className="flex items-center gap-2">
-                    <ShieldCheck
-                      className="w-5 h-5 text-indigo-600"
-                      aria-hidden="true"
-                    />
-                    Accessibility Statement
-                  </span>
-                  <span className="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">
-                    Verified
-                  </span>
+                  <ShieldCheck
+                    className="w-5 h-5 text-indigo-600"
+                    aria-hidden="true"
+                  />
+                  Accessibility Statement
                 </Link>
               </nav>
 

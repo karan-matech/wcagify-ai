@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { Reveal } from "./Reveal";
 import {
   Sparkles,
   RotateCcw,
@@ -68,16 +69,12 @@ export const HeroTransformationPreview: React.FC = () => {
       className="py-12 sm:py-20 lg:py-24 bg-white border-b border-slate-200"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-10 sm:mb-14">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-indigo-100 text-indigo-800 border border-indigo-200">
-            <Sparkles
-              className="w-3.5 h-3.5 text-indigo-600 shrink-0"
-              aria-hidden="true"
-            />
+        <Reveal className="text-center max-w-3xl mx-auto space-y-4 mb-10 sm:mb-14">
+          <p className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-indigo-600">
             Simple Animated Breakdown
-          </span>
+          </p>
 
-          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight leading-tight">
             How WCAGify Fixes Your Website{" "}
             <span className="text-indigo-600">In Seconds</span>
           </h2>
@@ -87,7 +84,7 @@ export const HeroTransformationPreview: React.FC = () => {
             automatically removes barriers for real people—whether they use
             screen readers, keyboard navigation, or high-contrast display modes.
           </p>
-        </div>
+        </Reveal>
 
         <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-8">
           <button

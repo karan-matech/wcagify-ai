@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { Reveal } from "./Reveal";
 import {
   ShieldAlert,
   ShieldCheck,
@@ -65,17 +66,12 @@ export const BuildGatekeeperDemo: React.FC = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         {/* Friendly Section Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-10 sm:mb-14">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-rose-100 text-rose-800 border border-rose-200">
-            <ShieldAlert
-              className="w-3.5 h-3.5 text-rose-600 shrink-0"
-              aria-hidden="true"
-            />
+        <Reveal className="text-center max-w-3xl mx-auto space-y-4 mb-10 sm:mb-14">
+          <p className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-rose-600">
             Automatic Quality Gatekeeper
-          </span>
-          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
-            Stop Inaccessible Content{" "}
-            <span className="text-rose-600">Before It Goes Live</span>
+          </p>
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight leading-tight">
+            Stop inaccessible content before it goes live
           </h2>
           <p className="text-sm sm:text:base lg:text-lg text-slate-600 leading-relaxed">
             Think of WCAGify as an automatic security guard for your website. If
@@ -83,7 +79,7 @@ export const BuildGatekeeperDemo: React.FC = () => {
             unreadable documents, WCAGify stops the update instantly and fixes
             it before customers see it.
           </p>
-        </div>
+        </Reveal>
 
         {/* Animated Interactive Guard Card */}
         <div className="bg-slate-900 rounded-3xl p-4 sm:p-8 lg:p-10 shadow-2xl border border-slate-800 text-white max-w-5xl mx-auto relative overflow-hidden">

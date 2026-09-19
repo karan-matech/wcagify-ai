@@ -1,12 +1,12 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { Reveal } from "./Reveal";
 import {
   Layout,
   FileText,
   BookOpen,
   Database,
-  Sparkles,
   CheckCircle2,
   AlertTriangle,
   Wand2,
@@ -249,46 +249,19 @@ export const FeatureTabs: React.FC = () => {
   };
 
   const getStatusBadge = (status: AssetStatus, isSelected: boolean) => {
-    switch (status) {
-      case "live":
-        return (
-          <span
-            className={`text-[9px] sm:text-[10px] uppercase font-extrabold px-1.5 py-0.5 rounded ml-1 tracking-wider ${
-              isSelected
-                ? "bg-emerald-500 text-white"
-                : "bg-emerald-100 text-emerald-800"
-            }`}
-          >
-            Live
-          </span>
-        );
-      case "beta":
-        return (
-          <span
-            className={`text-[9px] sm:text-[10px] uppercase font-extrabold px-1.5 py-0.5 rounded ml-1 tracking-wider ${
-              isSelected
-                ? "bg-amber-500 text-white"
-                : "bg-amber-100 text-amber-800"
-            }`}
-          >
-            Beta
-          </span>
-        );
-      case "pipeline":
-        return (
-          <span
-            className={`text-[9px] sm:text-[10px] uppercase font-extrabold px-1.5 py-0.5 rounded ml-1 tracking-wider whitespace-nowrap ${
-              isSelected
-                ? "bg-blue-500 text-white"
-                : "bg-blue-100 text-blue-800"
-            }`}
-          >
-            Pipeline
-          </span>
-        );
-      default:
-        return null;
-    }
+    const label =
+      status === "live" ? "Live" : status === "beta" ? "Beta" : "Pipeline";
+    return (
+      <span
+        className={`text-[9px] sm:text-[10px] uppercase font-semibold px-1.5 py-0.5 rounded ml-1 tracking-wider whitespace-nowrap ${
+          isSelected
+            ? "bg-white/20 text-white"
+            : "bg-slate-100 text-slate-500"
+        }`}
+      >
+        {label}
+      </span>
+    );
   };
 
   return (
@@ -297,24 +270,19 @@ export const FeatureTabs: React.FC = () => {
       className="py-12 sm:py-20 lg:py-24 bg-slate-50 border-b border-slate-200"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-10 sm:mb-14">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-indigo-100 text-indigo-800 border border-indigo-200">
-            <Sparkles
-              className="w-3.5 h-3.5 text-indigo-600 shrink-0"
-              aria-hidden="true"
-            />
+        <Reveal className="text-center max-w-3xl mx-auto space-y-4 mb-10 sm:mb-14">
+          <p className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-indigo-600">
             Universal Asset Transformation
-          </span>
-          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
-            One Engine.{" "}
-            <span className="text-indigo-600">Every Asset Format.</span>
+          </p>
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight leading-tight">
+            One Engine. Every Asset Format.
           </h2>
           <p className="text-sm sm:text:base lg:text-lg text-slate-600 leading-relaxed">
             Select a digital format below to see how WCAGify automatically
             converts inaccessible files, e-books, and web apps into natively
             compliant assets.
           </p>
-        </div>
+        </Reveal>
 
         <div
           role="tablist"

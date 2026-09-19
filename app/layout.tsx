@@ -1,9 +1,16 @@
 // app/layout.tsx
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
+import { Sora } from "next/font/google";
 import Script from "next/script";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
+
+const sora = Sora({
+  subsets: ["latin"],
+  variable: "--font-display",
+  display: "swap",
+});
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -88,7 +95,11 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`scroll-smooth ${sora.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <Script
           type="application/ld+json"

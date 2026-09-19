@@ -285,11 +285,14 @@ export const Footer: React.FC<FooterProps> = ({
         <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 text-xs">
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-slate-400">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-800 text-emerald-400 border border-slate-700 font-semibold">
-                <ShieldCheck className="w-3.5 h-3.5" aria-hidden="true" />
-                WCAG 2.2 AA Compliant
+              <ShieldCheck
+                className="w-3.5 h-3.5 text-emerald-400 shrink-0"
+                aria-hidden="true"
+              />
+              <span>
+                WCAG 2.2 AA Compliant · Natively Built — Zero Overlay
+                Dependencies.
               </span>
-              <span>Natively Built — Zero Overlay Dependencies.</span>
             </div>
 
             <div className="flex items-center gap-1 text-slate-400 text-[11px] pl-0.5">
